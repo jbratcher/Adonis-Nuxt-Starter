@@ -10,25 +10,12 @@
         @click.stop="drawer = !drawer"
         class="hidden-md-and-up"
       />
-      <v-list class="d-flex" color="transparent">
-        <!-- General links -->
-        <v-list-item
-          v-for="(item, i) in links"
-          :key="i + `-${item.title}`"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action class="mr-2">
-            <v-icon>
-              {{ item.icon }}
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <MenuLinks
+        :general-links="generalLinks"
+        :logged-out-links="loggedOutLinks"
+        list-class="d-md-flex justify-end hidden-md-and-down ml-auto"
+        list-item-class="mx-1"
+      />
     </v-app-bar>
     <!-- side/mobile navigation -->
     <v-navigation-drawer
@@ -38,6 +25,13 @@
       fixed
       right
     >
+      <MenuLinks
+        :general-links="generalLinks"
+        :logged-out-links="loggedOutLinks"
+        list-class="d-flex flex-column my-6 mx-3"
+        list-item-class="my-3"
+        listItemTitleClass="title"
+      />
     </v-navigation-drawer>
     <!-- Nuxt content -->
     <v-content>
@@ -55,11 +49,16 @@
 </template>
 
 <script>
+import MenuLinks from "../components/MenuLinks";
+import { mdiAccountPlus, mdiLogin, mdiMenu } from "@mdi/js";
 export default {
+  components: {
+    MenuLinks
+  },
   data() {
     return {
       drawer: false,
-      links: [
+      generalLinks: [
         {
           icon: "mdi-format-list-bulleted-square",
           title: "Resources",
@@ -69,6 +68,18 @@ export default {
           icon: "mdi-plus-circle",
           title: "Create",
           to: "/resources/create"
+        }
+      ],
+      loggedOutLinks: [
+        {
+          icon: mdiLogin,
+          title: "Login",
+          to: "/login"
+        },
+        {
+          icon: mdiAccountPlus,
+          title: "Register",
+          to: "/register"
         }
       ]
     };

@@ -27,7 +27,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ["~/plugins/breakpoint", "~/plugins/vuetify-theme-cache"],
   /*
    ** Nuxt.js dev-modules
    */
@@ -38,24 +38,37 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
-    `@nuxtjs/proxy`,
+    "@nuxtjs/auth",
     "@nuxtjs/pwa"
   ],
+  /*
+   ** Nuxtjs auth module
+   */
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: "/auth/login",
+            method: "post",
+            propertyName: "token"
+          },
+          user: { url: "/auth/user", method: "get", propertyName: false }
+        }
+        // tokenRequired: true,
+        // tokenType: "bearer"
+      }
+    },
+    token: {
+      prefix: "token"
+    }
+  },
   /*
    ** Axios module configuration
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "http://127.0.0.1:3333/api",
-    proxy: true
-  },
-  proxy: {
-    "/api": {
-      target: "http://localhost:3333",
-      pathRewrite: {
-        "^/api": "/"
-      }
-    }
+    baseURL: "http://localhost:3333/"
   },
   /*
    ** vuetify module configuration

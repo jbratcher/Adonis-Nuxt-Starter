@@ -1,25 +1,31 @@
 <template>
-  <section v-if="resource" class="container">
-    <section class="content">
-      <h1>Resource {{ resource.id }}</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <b>{{ resource.name }}</b>
-            </td>
-            <td>{{ resource.quantity }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </section>
+  <v-container>
+    <v-row>
+      <v-col>
+        <template v-if="resource">
+          <v-card>
+            <h1>Resource {{ resource.id }}</h1>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <b>{{ resource.name }}</b>
+                  </td>
+                  <td>{{ resource.quantity }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </v-card>
+        </template>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -37,8 +43,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.content {
-  margin: 0 1rem;
-}
-</style>
+<style lang="scss"></style>

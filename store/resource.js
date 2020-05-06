@@ -31,7 +31,7 @@ export const actions = {
   // fetch all resources
   async fetchResources({ commit }) {
     await this.$axios
-      .$get(`/api/resources/`)
+      .$get(`/resources/`)
       .then(data => {
         commit("setResources", data);
       })
@@ -42,7 +42,7 @@ export const actions = {
   // fetch resources by id
   async fetchResource({ commit }, id) {
     await this.$axios
-      .$get(`/api/resources/${id}`)
+      .$get(`/resources/${id}`)
       .then(data => {
         commit("setResource", data);
       })
@@ -54,7 +54,7 @@ export const actions = {
   async createResource({ commit }, resource) {
     console.log(`Creating resource`);
     await this.$axios
-      .$post("/api/resources/", {
+      .$post("/resources/", {
         name: resource.name,
         quantity: resource.quantity
       })
@@ -70,14 +70,14 @@ export const actions = {
   async updateResource({ commit }, resource) {
     console.log(`Resource: ${JSON.stringify(resource)}`);
     await this.$axios
-      .$patch(`/api/resources/${resource.id}`, resource)
+      .$patch(`/resources/${resource.id}`, resource)
       .then(data => console.log(data))
       .catch(error => console.log(error));
   },
   // delete a resource
   async deleteResource({ commit }, resource) {
     await this.$axios
-      .$delete(`/api/resources/${resource.id}`)
+      .$delete(`/resources/${resource.id}`)
       .then(data => console.log(data))
       .catch(error => console.log(error));
   }
