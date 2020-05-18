@@ -9,17 +9,10 @@
             'headline mb-9': $breakpoint.smAndDown
           }"
         >
-          Login
+          Forgot Password
         </h1>
 
         <v-text-field v-model="email" label="Email" placeholder="Email" />
-        <v-text-field
-          v-model="password"
-          label="Password"
-          placeholder="Password"
-          type="password"
-          autocomplete="new-password"
-        />
         <v-alert :value="Boolean(error)" type="error">{{ error }}</v-alert>
         <v-btn @click="login" dark width="fit-content">
           <v-icon class="mr-3">{{ loginIcon }}</v-icon
@@ -50,7 +43,7 @@ export default {
       await this.$auth
         .loginWith("local", {
           data: {
-            uid: this.email,
+            email: this.email,
             password: this.password
           }
         })
@@ -59,6 +52,13 @@ export default {
           this.$router.replace("/");
         })
         .catch(error => console.log(`Login Error: ${error}`));
+    },
+    async reset() {
+      const { data } = await this.$axios.post("/password/reset");
+
+      this.status = data.status;
+
+      this.form.reset();
     }
   }
 };

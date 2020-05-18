@@ -44,6 +44,23 @@
       </v-list-item>
     </template>
 
+    <!-- User Profile Link -->
+    <v-list-item
+      v-if="isAuthenticated"
+      class="mb-0"
+      exact
+      router
+      :to="`/users/${this.$auth.user.id}`"
+    >
+      <v-avatar size="36">
+        <img
+          v-if="this.$auth.user"
+          alt="Avatar"
+          :src="this.$auth.user.profile_image_source"
+        />
+      </v-avatar>
+    </v-list-item>
+
     <!-- logout link -->
     <v-list-item
       v-if="isAuthenticated"

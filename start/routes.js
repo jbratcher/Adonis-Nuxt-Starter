@@ -19,14 +19,15 @@ const Route = use("Route");
 Route.get("/", "HomeController.index");
 
 // Auth
-Route.post("/auth/register", "UserController.register");
-Route.post("/auth/login", "UserController.login");
 Route.get("/auth/user", "UserController.getCurrentUser");
+Route.post("/auth/login", "UserController.login");
+Route.post("auth/logout", "UserController.logout");
+Route.post("/auth/register", "UserController.register");
 
-// Profile
+// User Profile
 Route.get("/users/:id", "UserController.show");
 
-// Resources
+// Resources Example
 Route.group(() => {
   Route.get("/", "ResourceController.index");
   Route.get("/:id", "ResourceController.show");

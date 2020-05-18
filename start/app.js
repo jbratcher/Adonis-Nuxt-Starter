@@ -12,11 +12,15 @@
 */
 const providers = [
   "@adonisjs/framework/providers/AppProvider",
-  "@adonisjs/lucid/providers/LucidProvider",
+  "@adonisjs/auth/providers/AuthProvider",
   "@adonisjs/bodyparser/providers/BodyParserProvider",
   "@adonisjs/cors/providers/CorsProvider",
-  "@adonisjs/auth/providers/AuthProvider",
-  "adonis-lucid-update-or-create/providers/UpdateOrCreateProvider"
+  "@adonisjs/lucid/providers/LucidProvider",
+  "@adonisjs/mail/providers/MailProvider",
+  "@adonisjs/persona/providers/PersonaProvider",
+  "adonis-lucid-update-or-create/providers/UpdateOrCreateProvider",
+  "@adonisjs/validator/providers/ValidatorProvider",
+  "@adonisjs/framework/providers/ViewProvider"
 ];
 
 /*

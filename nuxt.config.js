@@ -53,10 +53,17 @@ export default {
             method: "post",
             propertyName: "token"
           },
+          logout: {
+            url: "/auth/logout",
+            method: "post",
+            propertyName: "token"
+          },
           user: { url: "/auth/user", method: "get", propertyName: false }
         }
         // tokenRequired: true,
-        // tokenType: "bearer"
+        // tokenType: 'bearer',
+        // globalToken: true,
+        // autoFetchUser: true
       }
     },
     token: {

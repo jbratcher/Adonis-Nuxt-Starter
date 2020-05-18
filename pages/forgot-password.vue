@@ -3,31 +3,19 @@
     <v-row>
       <v-col class="d-flex flex-column mx-auto col-9 col-md-6 py-12">
         <!-- User Login Form -->
-        <h1
-          :class="{
-            'display-1 mb-12': $breakpoint.mdAndUp,
-            'headline mb-9': $breakpoint.smAndDown
-          }"
-        >
-          Login
+        <h1 :class="$breakpoint.mdAndUp ? 'display-1' : 'headline'">
+          Forgot Password
         </h1>
+        <p class="body-2" :class="$breakpoint.mdAndUp ? 'mb-12' : 'mb-9'">
+          Enter your email and we will send you a password reset link
+        </p>
 
         <v-text-field v-model="email" label="Email" placeholder="Email" />
-        <v-text-field
-          v-model="password"
-          label="Password"
-          placeholder="Password"
-          type="password"
-          autocomplete="new-password"
-        />
         <v-alert :value="Boolean(error)" type="error">{{ error }}</v-alert>
-        <v-btn @click="login" dark width="fit-content">
-          <v-icon class="mr-3">{{ loginIcon }}</v-icon
-          >Login
+        <v-btn @click="reset" dark width="fit-content">
+          <v-icon class="mr-3">{{ forgotIcon }}</v-icon
+          >Send email
         </v-btn>
-        <v-btn class="body-2 my-6 mr-auto px-0" to="/forgot-password" text
-          >Forgot Password?</v-btn
-        >
       </v-col>
     </v-row>
   </v-container>
@@ -35,11 +23,11 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
-import { mdiLogin } from "@mdi/js";
+import { mdiLockQuestion } from "@mdi/js";
 export default {
   data() {
     return {
-      loginIcon: mdiLogin,
+      forgotIcon: mdiLockQuestion,
       email: "",
       password: "",
       error: null
@@ -50,7 +38,7 @@ export default {
       await this.$auth
         .loginWith("local", {
           data: {
-            uid: this.email,
+            email: this.email,
             password: this.password
           }
         })
@@ -59,6 +47,12 @@ export default {
           this.$router.replace("/");
         })
         .catch(error => console.log(`Login Error: ${error}`));
+    },
+    async reset() {
+      // axios post to user controller
+      // user controller sends email if email address exists in users table
+      // generated email with link to reset page (token validated?)
+      // link goes to password reset page with validator
     }
   }
 };

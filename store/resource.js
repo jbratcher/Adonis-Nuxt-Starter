@@ -1,6 +1,7 @@
 export const state = () => ({
   resources: [],
-  resource: {}
+  resource: {},
+  userResources: []
 });
 
 export const getters = {};
@@ -24,6 +25,9 @@ export const mutations = {
   },
   setResources(state, resources) {
     state.resources = resources;
+  },
+  setUserResources(state, userResources) {
+    state.userResources = userResources;
   }
 };
 
@@ -38,6 +42,9 @@ export const actions = {
       .catch(error => {
         console.log(`Fetch resources error: ${error}`);
       });
+  },
+  async fetchResourcesByUser({ commit }) {
+    // todo
   },
   // fetch resources by id
   async fetchResource({ commit }, id) {
