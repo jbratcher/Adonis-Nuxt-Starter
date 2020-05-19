@@ -91,7 +91,7 @@ export default {
       this.$auth
         .loginWith("local", {
           data: {
-            email: this.email,
+            uid: this.email,
             password: this.password
           }
         })

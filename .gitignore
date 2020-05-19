@@ -90,5 +90,7 @@ sw.*
 *.swp
 
 # notes
-
 notes/
+
+# sqlite db
+database/adonis.sqlite
