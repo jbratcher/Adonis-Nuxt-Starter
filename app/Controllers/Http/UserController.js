@@ -38,7 +38,7 @@ class UserController {
       "password",
       "password_confirmation"
     ]);
-    const { first_name, last_name } = request.all();
+    const { first_name, last_name } = payload;
     payload.full_name = `${first_name} ${last_name}`;
     payload.profile_image_source = `https://ui-avatars.com/api/?name=${first_name}+${last_name}`;
     const user = await Persona.register(payload);
@@ -52,6 +52,15 @@ class UserController {
       return "You cannot see someone else's profile";
     }
     return user;
+  }
+
+  async verifyEmail({ request, params, session, response }) {
+    console.log("verifying email");
+    const token = request.input("token");
+    console.log("Raw token: ", token);
+    console.log("Decoded: ", decodeURIComponent(token));
+    const user = await Persona.verifyEmail(token);
+    session.flash({ message: "Email verified" });
   }
 }
 

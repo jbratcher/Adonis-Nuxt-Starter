@@ -15,5 +15,13 @@ export const getters = {
 export const mutations = {};
 
 export const actions = {
-  async nuxtServerInit({}) {}
+  async nuxtServerInit({}) {},
+
+  async verifyEmailWithToken({ commit }, token) {
+    console.log(token);
+    await this.$axios
+      .$get(`/auth/verify-email?token=${token}`)
+      .then(response => console.log(response))
+      .catch(e => console.log(e));
+  }
 };

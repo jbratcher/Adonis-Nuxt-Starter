@@ -51,7 +51,7 @@ module.exports = {
   | State of user when a new account is created
   |
   */
-  newAccountState: "active",
+  newAccountState: "pending",
 
   /*
   |--------------------------------------------------------------------------
