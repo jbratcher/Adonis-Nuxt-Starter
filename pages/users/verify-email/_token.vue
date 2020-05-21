@@ -17,7 +17,6 @@ export default {
     ...mapActions(["verifyEmailWithToken"])
   },
   created() {
-    console.log(Object.values(this.$route.query)[0]);
     this.verifyEmailWithToken(Object.values(this.$route.query)[0]);
   }
 };

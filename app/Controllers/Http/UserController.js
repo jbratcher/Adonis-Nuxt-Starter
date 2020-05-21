@@ -57,10 +57,21 @@ class UserController {
   async verifyEmail({ request, params, session, response }) {
     console.log("verifying email");
     const token = request.input("token");
-    console.log("Raw token: ", token);
-    console.log("Decoded: ", decodeURIComponent(token));
     const user = await Persona.verifyEmail(token);
     session.flash({ message: "Email verified" });
+  }
+
+  async update({ request, auth }) {
+    const payload = request.only([
+      "first_name",
+      "last_name",
+      "profile_image_source"
+    ]);
+    payload.full_name = `${payload.first_name} ${payload.last_name}`;
+    const user = await auth.user;
+    await Persona.updateProfile(user, payload);
+    const updatedUser = await auth.user;
+    return updatedUser;
   }
 }
 

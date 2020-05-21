@@ -20,10 +20,11 @@ Route.get("/", "HomeController.index");
 
 // Auth
 Route.get("/auth/user", "UserController.getCurrentUser");
-Route.get("/auth/verify-email/", "UserController.verifyEmail");
+Route.get("/auth/verify-email", "UserController.verifyEmail");
 Route.post("/auth/login", "UserController.login");
 Route.post("auth/logout", "UserController.logout");
 Route.post("/auth/register", "UserController.register");
+Route.patch("/auth/update", "UserController.update");
 
 // User Profile
 Route.get("/users/:id", "UserController.show");
