@@ -28,7 +28,9 @@ export const actions = {
   },
 
   async updateUserProfile({ commit, dispatch }, user) {
-    console.log(user);
+    console.log(JSON.parse(JSON.stringify(user)));
+    // add image to static folder before update user profile
+    dispatch("updateProfilePic", user);
     await this.$axios
       .$patch("/auth/update", user)
       .then(response => {
@@ -36,5 +38,27 @@ export const actions = {
         this.$auth.setUser(response);
       })
       .catch(error => console.log(error));
+  },
+
+  updateProfilePic({ commit }, user) {
+    // new images must be post to Adonis via form data through axios
+    let formData = new FormData();
+    formData.append("profile_image_source", user.profile_image_source);
+    let url = "/auth/update/profile-pic";
+    let config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+    this.$axios({
+      method: "post",
+      url: url,
+      data: formData,
+      config: config
+    })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(e => console.log(error));
   }
 };

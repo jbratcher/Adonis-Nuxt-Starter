@@ -1,5 +1,6 @@
 "use strict";
 
+const Helpers = use("Helpers");
 const Persona = use("Persona");
 const User = use("App/Models/User");
 
@@ -62,16 +63,30 @@ class UserController {
   }
 
   async update({ request, auth }) {
-    const payload = request.only([
-      "first_name",
-      "last_name",
-      "profile_image_source"
-    ]);
-    payload.full_name = `${payload.first_name} ${payload.last_name}`;
     const user = await auth.user;
+    const payload = request.only(["first_name", "last_name"]);
+    payload.full_name = `${payload.first_name} ${payload.last_name}`;
     await Persona.updateProfile(user, payload);
     const updatedUser = await auth.user;
     return updatedUser;
+  }
+
+  async updateProfilePic({ request, auth }) {
+    const user = await auth.user;
+    const file = await request.file("profile_image_source");
+    // move the image file to the static/images folder
+    await file.move(Helpers.appRoot("static/images"), {
+      name: `${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`,
+      overwrite: true
+    });
+    // error handling for file move
+    if (!file.moved()) {
+      return file.error();
+    }
+    // Update the image link in the user's image source column
+    user.profile_image_source = `/images/${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`;
+    user.save();
+    return file;
   }
 }
 

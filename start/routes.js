@@ -24,6 +24,7 @@ Route.get("/auth/verify-email", "UserController.verifyEmail");
 Route.post("/auth/login", "UserController.login");
 Route.post("auth/logout", "UserController.logout");
 Route.post("/auth/register", "UserController.register");
+Route.post("/auth/update/profile-pic", "UserController.updateProfilePic");
 Route.patch("/auth/update", "UserController.update");
 
 // User Profile

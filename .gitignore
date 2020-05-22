@@ -94,3 +94,6 @@ notes/
 
 # sqlite db
 database/adonis.sqlite
+
+# tmp
+tmp/

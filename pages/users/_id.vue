@@ -49,7 +49,7 @@
             label="Last Name"
           />
 
-          <!-- <v-file-input
+          <v-file-input
             v-if="editMode"
             v-model="user.profile_image_source"
             :rules="profileImageRules"
@@ -57,7 +57,7 @@
             placeholder="Update your profile picture"
             prepend-icon="mdi-camera"
             label="Profile Picture"
-          /> -->
+          />
         </v-container>
 
         <v-container>
@@ -107,7 +107,7 @@ export default {
     user: {
       first_name: "",
       last_name: "",
-      profile_image_source: []
+      profile_image_source: null
     },
     valid: true
   }),
