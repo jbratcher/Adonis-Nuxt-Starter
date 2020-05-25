@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Welcome</title>
+  <title>New User Registration</title>
 </head>
 <body>
   <section>
-      <p>Website Analyzer App Registration Confirmatioon</p>
       <p>
-        Welcome, {{ user.full_name }}. Thanks for registering.
+        Welcome, {{ user.full_name }}. Thanks for registering. Please click the link below to verify your email and activate your account.
       </p>
     <a href="http://localhost:3000/users/verify-email?token={{token}}">Verify your email</a>
   </section>

@@ -25,7 +25,7 @@
           <v-icon class="mr-3">{{ loginIcon }}</v-icon
           >Login
         </v-btn>
-        <v-btn class="body-2 my-6 mr-auto px-0" to="/forgot-password" text
+        <v-btn class="body-2 my-6 mr-auto px-0" to="/users/forgot-password" text
           >Forgot Password?</v-btn
         >
       </v-col>
@@ -59,6 +59,9 @@ export default {
           this.$router.replace("/");
         })
         .catch(error => console.log(`Login Error: ${error}`));
+    },
+    async resetPassword() {
+      this.forgotPasswordLink(this.$auth.user);
     }
   }
 };

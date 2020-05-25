@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col class="d-flex flex-column mx-auto col-9 col-md-6 py-12">
-        <!-- User Login Form -->
+        <!-- Forgot Password Form -->
         <h1 :class="$breakpoint.mdAndUp ? 'display-1' : 'headline'">
           Forgot Password
         </h1>
@@ -29,30 +29,13 @@ export default {
     return {
       forgotIcon: mdiLockQuestion,
       email: "",
-      password: "",
       error: null
     };
   },
   methods: {
-    async login() {
-      await this.$auth
-        .loginWith("local", {
-          data: {
-            email: this.email,
-            password: this.password
-          }
-        })
-        .then(response => {
-          this.$auth.setToken("local", "Bearer " + response.data.token);
-          this.$router.replace("/");
-        })
-        .catch(error => console.log(`Login Error: ${error}`));
-    },
+    ...mapActions(["forgotPasswordLink"]),
     async reset() {
-      // axios post to user controller
-      // user controller sends email if email address exists in users table
-      // generated email with link to reset page (token validated?)
-      // link goes to password reset page with validator
+      this.forgotPasswordLink(this.email);
     }
   }
 };

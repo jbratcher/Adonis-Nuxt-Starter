@@ -7,6 +7,7 @@
             <v-img :src="this.$auth.user.profile_image_source" />
           </v-avatar>
 
+          <!-- edit profile -->
           <v-container class="pa-0">
             <v-row>
               <v-col class="d-flex justify-center">
@@ -29,10 +30,36 @@
             </v-row>
           </v-container>
 
+          <!-- update password -->
+          <v-container class="pa-0">
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <!-- Edit/Cancel Edit Event Button -->
+                <v-btn
+                  @click="toggleEditPasswordMode"
+                  :color="editPasswordMode ? 'warning' : 'secondary'"
+                >
+                  <v-icon>{{
+                    editPasswordMode ? accountKeyIcon : accountLockIcon
+                  }}</v-icon>
+                </v-btn>
+                <!-- Update Event -->
+                <v-btn
+                  v-if="editPasswordMode"
+                  @click="updateUserPasswordClient"
+                  color="primary darken-2"
+                >
+                  <v-icon>{{ contentSaveIcon }}</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+
           <p>{{ this.$auth.user.email }}</p>
 
           <p v-if="!editMode">{{ this.$auth.user.full_name }}</p>
 
+          <!-- edit profile fields -->
           <v-text-field
             v-if="editMode"
             v-model="user.first_name"
@@ -57,6 +84,25 @@
             placeholder="Update your profile picture"
             prepend-icon="mdi-camera"
             label="Profile Picture"
+          />
+
+          <!-- change password fields -->
+          <v-text-field
+            v-if="editPasswordMode"
+            v-model="updatePassword.old_password"
+            label="Old password"
+          />
+
+          <v-text-field
+            v-if="editPasswordMode"
+            v-model="updatePassword.password"
+            label="New Password"
+          />
+
+          <v-text-field
+            v-if="editPasswordMode"
+            v-model="updatePassword.password_confirmation"
+            label="Confirm New Password"
           />
         </v-container>
 
@@ -86,12 +132,22 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import { mdiCamera, mdiContentSave, mdiPencil, mdiPencilOff } from "@mdi/js";
+import {
+  mdiAccountKey,
+  mdiAccountLock,
+  mdiCamera,
+  mdiContentSave,
+  mdiPencil,
+  mdiPencilOff
+} from "@mdi/js";
 export default {
   data: () => ({
+    accountKeyIcon: mdiAccountKey,
+    accountLockIcon: mdiAccountLock,
     cameraIcon: mdiCamera,
     contentSaveIcon: mdiContentSave,
     editMode: false,
+    editPasswordMode: false,
     nameRules: [
       v => !!v || "Name is required",
       v => (v && v.length <= 50) || "Name must be less than 50 characters"
@@ -104,6 +160,11 @@ export default {
         value.size < 2000000 ||
         "Profile image size should be less than 2 MB!"
     ],
+    updatePassword: {
+      old_password: "",
+      password: "",
+      password_confirmation: ""
+    },
     user: {
       first_name: "",
       last_name: "",
@@ -119,7 +180,7 @@ export default {
     this.fetchResourcesByUser();
   },
   methods: {
-    ...mapActions(["updateUserProfile"]),
+    ...mapActions(["updateUserProfile", "updateUserPassword"]),
     ...mapActions("resource", ["fetchResourcesByUser"]),
     titleCase(string) {
       return titleCase(string);
@@ -127,9 +188,16 @@ export default {
     toggleEditMode() {
       this.editMode = !this.editMode;
     },
+    toggleEditPasswordMode() {
+      this.editPasswordMode = !this.editPasswordMode;
+    },
     updateUser() {
       this.updateUserProfile(this.user);
       this.editMode = false;
+    },
+    updateUserPasswordClient() {
+      this.updateUserPassword(this.updatePassword);
+      this.editPasswordMode = false;
     }
   }
 };
