@@ -2,15 +2,44 @@
   <v-container>
     <v-row>
       <v-col>
+        <!-- Profile Updated Notification -->
+        <template v-if="profileUpdated">
+          <v-alert
+            v-model="profileUpdatedalert"
+            border="left"
+            close-text="Close Alert"
+            color="teal lighten-1"
+            dark
+            dismissible
+          >
+            You profile has been updated.
+          </v-alert>
+        </template>
+
+        <!-- Password Updated Notification -->
+        <template v-if="passwordChanged">
+          <v-alert
+            v-model="passwordUpdatedAlert"
+            border="left"
+            close-text="Close Alert"
+            color="primary lighten-1"
+            dark
+            dismissible
+          >
+            You password has been changed.
+          </v-alert>
+        </template>
+
         <v-container v-if="this.$auth.user" class="profile-card">
+          <!-- User avatar -->
           <v-avatar size="128">
             <v-img :src="this.$auth.user.profile_image_source" />
           </v-avatar>
 
           <!-- edit profile -->
           <v-container class="pa-0">
-            <v-row>
-              <v-col class="d-flex justify-center">
+            <v-row justify="center" align="center">
+              <v-col cols="2" class="d-flex justify-center">
                 <!-- Edit/Cancel Edit Event Button -->
                 <v-btn
                   @click="toggleEditMode"
@@ -27,20 +56,16 @@
                   <v-icon>{{ contentSaveIcon }}</v-icon>
                 </v-btn>
               </v-col>
-            </v-row>
-          </v-container>
 
-          <!-- update password -->
-          <v-container class="pa-0">
-            <v-row>
-              <v-col class="d-flex justify-center">
+              <!-- update password -->
+              <v-col cols="2" class="d-flex justify-center">
                 <!-- Edit/Cancel Edit Event Button -->
                 <v-btn
                   @click="toggleEditPasswordMode"
                   :color="editPasswordMode ? 'warning' : 'secondary'"
                 >
                   <v-icon>{{
-                    editPasswordMode ? accountKeyIcon : accountLockIcon
+                    editPasswordMode ? cancelIcon : accountLockIcon
                   }}</v-icon>
                 </v-btn>
                 <!-- Update Event -->
@@ -91,18 +116,27 @@
             v-if="editPasswordMode"
             v-model="updatePassword.old_password"
             label="Old password"
+            placeholder="Old Password"
+            type="password"
+            autocomplete="new-password"
           />
 
           <v-text-field
             v-if="editPasswordMode"
             v-model="updatePassword.password"
             label="New Password"
+            placeholder="New Password"
+            type="password"
+            autocomplete="new-password"
           />
 
           <v-text-field
             v-if="editPasswordMode"
             v-model="updatePassword.password_confirmation"
             label="Confirm New Password"
+            placeholder="Retype New Password"
+            type="password"
+            autocomplete="new-password"
           />
         </v-container>
 
@@ -131,18 +165,19 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import {
   mdiAccountKey,
   mdiAccountLock,
   mdiCamera,
+  mdiCancel,
   mdiContentSave,
   mdiPencil,
   mdiPencilOff
 } from "@mdi/js";
 export default {
   data: () => ({
-    accountKeyIcon: mdiAccountKey,
+    cancelIcon: mdiCancel,
     accountLockIcon: mdiAccountLock,
     cameraIcon: mdiCamera,
     contentSaveIcon: mdiContentSave,
@@ -152,6 +187,7 @@ export default {
       v => !!v || "Name is required",
       v => (v && v.length <= 50) || "Name must be less than 50 characters"
     ],
+    passwordUpdatedAlert: true,
     pencilIcon: mdiPencil,
     pencilOffIcon: mdiPencilOff,
     profileImageRules: [
@@ -160,6 +196,7 @@ export default {
         value.size < 2000000 ||
         "Profile image size should be less than 2 MB!"
     ],
+    profileUpdatedAlert: true,
     updatePassword: {
       old_password: "",
       password: "",
@@ -174,6 +211,7 @@ export default {
   }),
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"]),
+    ...mapState(["passwordChanged", "profileUpdated"]),
     ...mapState("resource", ["userResources"])
   },
   created() {
@@ -182,6 +220,7 @@ export default {
   methods: {
     ...mapActions(["updateUserProfile", "updateUserPassword"]),
     ...mapActions("resource", ["fetchResourcesByUser"]),
+    ...mapMutations(["resetPasswordChanged", "resetProfileUpdated"]),
     titleCase(string) {
       return titleCase(string);
     },
@@ -199,6 +238,10 @@ export default {
       this.updateUserPassword(this.updatePassword);
       this.editPasswordMode = false;
     }
+  },
+  mounted() {
+    this.resetPasswordChanged();
+    this.resetProfileUpdated();
   }
 };
 </script>

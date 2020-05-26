@@ -35,6 +35,33 @@
     </v-navigation-drawer>
     <!-- Nuxt content -->
     <v-content>
+      <!-- User Notifications -->
+      <v-alert
+        @input="setLoginSuccessful(false)"
+        border="left"
+        close-text="Close"
+        class="mx-auto"
+        dark
+        dismissible
+        transition="fade"
+        type="success"
+        :value="Boolean(loginSuccessful)"
+        width="80vw"
+        >{{ loginSuccessMessage }}</v-alert
+      >
+      <v-alert
+        @input="setLogoutSuccessful(false)"
+        border="left"
+        close-text="Close"
+        class="mx-auto"
+        dark
+        dismissible
+        transition="fade"
+        type="success"
+        :value="Boolean(logoutSuccessful)"
+        width="80vw"
+        >{{ logoutSuccessMessage }}</v-alert
+      >
       <nuxt />
     </v-content>
     <!-- Footer Area -->
@@ -49,40 +76,56 @@
 </template>
 
 <script>
-import MenuLinks from "../components/MenuLinks";
+import { mapMutations, mapState } from "vuex";
 import { mdiAccountPlus, mdiLogin, mdiMenu } from "@mdi/js";
+import MenuLinks from "../components/MenuLinks";
 export default {
   components: {
     MenuLinks
   },
-  data() {
-    return {
-      drawer: false,
-      generalLinks: [
-        {
-          icon: "mdi-format-list-bulleted-square",
-          title: "Resources",
-          to: "/resources"
-        },
-        {
-          icon: "mdi-plus-circle",
-          title: "Create",
-          to: "/resources/create"
-        }
-      ],
-      loggedOutLinks: [
-        {
-          icon: mdiLogin,
-          title: "Login",
-          to: "/login"
-        },
-        {
-          icon: mdiAccountPlus,
-          title: "Register",
-          to: "/register"
-        }
-      ]
-    };
+  data: () => ({
+    drawer: false,
+    generalLinks: [
+      {
+        icon: "mdi-format-list-bulleted-square",
+        title: "Resources",
+        to: "/resources"
+      },
+      {
+        icon: "mdi-plus-circle",
+        title: "Create",
+        to: "/resources/create"
+      }
+    ],
+    loggedOutLinks: [
+      {
+        icon: mdiLogin,
+        title: "Login",
+        to: "/login"
+      },
+      {
+        icon: mdiAccountPlus,
+        title: "Register",
+        to: "/register"
+      }
+    ],
+    loginSuccessMessage: "",
+    logoutSuccessMessage: ""
+  }),
+  computed: {
+    ...mapState(["loginSuccessful", "logoutSuccessful"])
+  },
+  methods: {
+    ...mapMutations(["setLoginSuccessful", "setLogoutSuccessful"])
+  },
+  mounted() {
+    if (this.loginSuccessful) {
+      console.log(this.$auth.user);
+      console.log(this.$auth.user.full_name);
+      this.loginSuccessMessage = `You have been logged in as ${this.$auth.user.full_name}`;
+    } else if (this.logoutSuccessful) {
+      this.logoutSuccessMessage = `You have been logged out`;
+    }
   }
 };
 </script>

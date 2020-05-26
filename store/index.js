@@ -1,4 +1,21 @@
-export const state = () => ({});
+export const state = () => ({
+  loginSuccessful: {
+    type: Boolean,
+    default: false
+  },
+  logoutSuccessful: {
+    type: Boolean,
+    default: false
+  },
+  passwordChanged: {
+    type: Boolean,
+    default: false
+  },
+  profileUpdated: {
+    type: Boolean,
+    default: false
+  }
+});
 
 export const getters = {
   isAuthenticated(state) {
@@ -12,7 +29,32 @@ export const getters = {
   }
 };
 
-export const mutations = {};
+export const mutations = {
+  resetLoginSuccessful(state) {
+    state.loginSuccessful = false;
+  },
+  resetLogoutSuccessful(state) {
+    state.loginSuccessful = false;
+  },
+  resetPasswordChanged(state) {
+    state.passwordChanged = false;
+  },
+  resetProfileUpdated(state) {
+    state.profileUpdated = false;
+  },
+  setLoginSuccessful(state, isSuccessful) {
+    state.loginSuccessful = isSuccessful;
+  },
+  setLogoutSuccessful(state, isSuccessful) {
+    state.loginSuccessful = isSuccessful;
+  },
+  setPasswordChanged(state, isChanged) {
+    state.passwordChanged = isChanged;
+  },
+  setProfileUpdated(state, isUpdated) {
+    state.profileUpdated = isUpdated;
+  }
+};
 
 export const actions = {
   async nuxtServerInit({}) {},
@@ -37,6 +79,7 @@ export const actions = {
       .then(response => {
         console.log(response);
         this.$auth.setUser(response);
+        commit("setProfileUpdated", true);
       })
       .catch(error => console.log(error));
   },
@@ -71,6 +114,7 @@ export const actions = {
       .$patch("/auth/update/password", updatePassword)
       .then(response => {
         console.log(response);
+        commit("setPasswordChanged", true);
       })
       .catch(error => console.log(error));
   },
@@ -96,7 +140,7 @@ export const actions = {
 
   // generate a forgot password email with token link and send to user
   async forgotPasswordLink({ commit }, email) {
-    console.log(JSON.parse(JSON.stringify(email)));
+    console.log(email);
     await this.$axios
       .$get(`/auth/forgot/password?uid=${email}`)
       .then(response => {

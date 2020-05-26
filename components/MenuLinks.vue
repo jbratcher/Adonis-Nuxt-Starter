@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import { mdiAccount, mdiLogout } from "@mdi/js";
 export default {
   name: "MenuLinks",
@@ -114,16 +114,16 @@ export default {
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"])
   },
-  data() {
-    return {
-      accountIcon: mdiAccount,
-      logoutIcon: mdiLogout
-    };
-  },
+  data: () => ({
+    accountIcon: mdiAccount,
+    logoutIcon: mdiLogout
+  }),
   methods: {
+    ...mapMutations(["setLogoutSuccessful"]),
     async logout() {
       await this.$auth.logout();
       this.$router.replace("/");
+      this.setLogoutSuccessful(true);
     }
   }
 };

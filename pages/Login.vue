@@ -12,15 +12,30 @@
           Login
         </h1>
 
-        <v-text-field v-model="email" label="Email" placeholder="Email" />
+        <v-text-field
+          v-model="email"
+          label="Email"
+          placeholder="Email"
+          :rules="emailRules"
+        />
         <v-text-field
           v-model="password"
           label="Password"
           placeholder="Password"
+          :rules="shortTextRules"
           type="password"
           autocomplete="new-password"
         />
-        <v-alert :value="Boolean(error)" type="error">{{ error }}</v-alert>
+        <v-alert
+          border="left"
+          close-text="Close"
+          color="warning"
+          dark
+          dismissible
+          :value="Boolean(loginErrorMessage)"
+          type="error"
+          >{{ loginErrorMessage }}</v-alert
+        >
         <v-btn @click="login" dark width="fit-content">
           <v-icon class="mr-3">{{ loginIcon }}</v-icon
           >Login
@@ -34,18 +49,19 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapMutations } from "vuex";
 import { mdiLogin } from "@mdi/js";
+import formRulesMixin from "../mixins/formRulesMixin";
 export default {
-  data() {
-    return {
-      loginIcon: mdiLogin,
-      email: "",
-      password: "",
-      error: null
-    };
-  },
+  mixins: [formRulesMixin],
+  data: () => ({
+    loginIcon: mdiLogin,
+    email: "",
+    password: "",
+    loginErrorMessage: ""
+  }),
   methods: {
+    ...mapMutations(["setLoginSuccessful"]),
     async login() {
       await this.$auth
         .loginWith("local", {
@@ -57,11 +73,13 @@ export default {
         .then(response => {
           this.$auth.setToken("local", "Bearer " + response.data.token);
           this.$router.replace("/");
+          this.setLoginSuccessful(true);
         })
-        .catch(error => console.log(`Login Error: ${error}`));
-    },
-    async resetPassword() {
-      this.forgotPasswordLink(this.$auth.user);
+        .catch(error => {
+          const errorMessage = error.response.data[0].message;
+          this.loginErrorMessage = errorMessage;
+          this.setLoginSuccessful(false);
+        });
     }
   }
 };
