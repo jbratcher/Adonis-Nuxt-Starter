@@ -37,49 +37,6 @@
     </v-navigation-drawer>
     <!-- Nuxt content -->
     <v-content>
-      <!-- User Notifications -->
-      <!-- Login Success -->
-      <v-alert
-        @input="setLoginSuccessful(false)"
-        border="left"
-        close-text="Close Login Notification"
-        class="mx-auto"
-        dark
-        dismissible
-        transition="scale-transition"
-        type="success"
-        :value="Boolean(loginSuccessful)"
-        :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
-        >{{ loginSuccessMessage }}</v-alert
-      >
-      <!-- Logout Success -->
-      <v-alert
-        @input="setLogoutSuccessful(false)"
-        border="left"
-        close-text="Close Logout Notification"
-        class="mx-auto"
-        dark
-        dismissible
-        transition="scale-transition"
-        type="success"
-        :value="Boolean(logoutSuccessful)"
-        :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
-        >{{ logoutSuccessMessage }}</v-alert
-      >
-      <!-- Registration Success -->
-      <v-alert
-        @input="setRegistrationSuccessful(false)"
-        border="left"
-        close-text="Close Registration Notification"
-        class="mx-auto"
-        dark
-        dismissible
-        transition="scale-transition"
-        type="success"
-        :value="Boolean(registrationSuccessful)"
-        :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
-        >{{ registrationSuccessMessage }}</v-alert
-      >
       <nuxt />
     </v-content>
     <!-- Footer Area -->
@@ -127,37 +84,7 @@ export default {
         to: "/register"
       }
     ]
-  }),
-  computed: {
-    ...mapState([
-      "loginSuccessful",
-      "logoutSuccessful",
-      "registrationSuccessful"
-    ]),
-    loginSuccessMessage() {
-      if (this.loginSuccessful) {
-        return `You have been logged in as ${this.$auth.user.full_name}`;
-      }
-    },
-    logoutSuccessMessage() {
-      if (this.logoutSuccessful) {
-        return `You have been logged out`;
-      }
-    },
-    registrationSuccessMessage() {
-      if (this.registrationSuccessful) {
-        return `Thanks for registering! We will email you an account confirmation link.`;
-      }
-    }
-  },
-  methods: {
-    ...mapMutations([
-      "setLoginSuccessful",
-      "setLogoutSuccessful",
-      "setRegistrationSuccessful"
-    ])
-  },
-  mounted() {}
+  })
 };
 </script>
 

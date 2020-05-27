@@ -2,34 +2,6 @@
   <v-container>
     <v-row>
       <v-col>
-        <!-- Profile Updated Notification -->
-        <template v-if="profileUpdated">
-          <v-alert
-            v-model="profileUpdatedalert"
-            border="left"
-            close-text="Close Alert"
-            color="teal lighten-1"
-            dark
-            dismissible
-          >
-            You profile has been updated.
-          </v-alert>
-        </template>
-
-        <!-- Password Updated Notification -->
-        <template v-if="passwordChanged">
-          <v-alert
-            v-model="passwordUpdatedAlert"
-            border="left"
-            close-text="Close Alert"
-            color="primary lighten-1"
-            dark
-            dismissible
-          >
-            You password has been changed.
-          </v-alert>
-        </template>
-
         <v-container v-if="this.$auth.user" class="profile-card">
           <!-- User avatar -->
           <v-avatar size="128">
@@ -187,7 +159,6 @@ export default {
       v => !!v || "Name is required",
       v => (v && v.length <= 50) || "Name must be less than 50 characters"
     ],
-    passwordUpdatedAlert: true,
     pencilIcon: mdiPencil,
     pencilOffIcon: mdiPencilOff,
     profileImageRules: [
@@ -196,7 +167,6 @@ export default {
         value.size < 2000000 ||
         "Profile image size should be less than 2 MB!"
     ],
-    profileUpdatedAlert: true,
     updatePassword: {
       old_password: "",
       password: "",
@@ -211,7 +181,6 @@ export default {
   }),
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"]),
-    ...mapState(["passwordChanged", "profileUpdated"]),
     ...mapState("resource", ["userResources"])
   },
   created() {
@@ -220,7 +189,6 @@ export default {
   methods: {
     ...mapActions(["updateUserProfile", "updateUserPassword"]),
     ...mapActions("resource", ["fetchResourcesByUser"]),
-    ...mapMutations(["resetPasswordChanged", "resetProfileUpdated"]),
     titleCase(string) {
       return titleCase(string);
     },
@@ -233,15 +201,13 @@ export default {
     updateUser() {
       this.updateUserProfile(this.user);
       this.editMode = false;
+      this.$toast.success("Profile updated...").goAway(3000);
     },
     updateUserPasswordClient() {
       this.updateUserPassword(this.updatePassword);
       this.editPasswordMode = false;
+      this.$toast.success("Password changed...").goAway(3000);
     }
-  },
-  mounted() {
-    this.resetPasswordChanged();
-    this.resetProfileUpdated();
   }
 };
 </script>

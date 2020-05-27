@@ -1,5 +1,4 @@
 export const state = () => ({
-  loginSuccessful: false,
   logoutSuccessful: false,
   passwordChanged: false,
   profileUpdated: false,
@@ -27,9 +26,6 @@ export const mutations = {
   },
   resetRegistrationSuccessful(state) {
     state.registrationSuccessful = false;
-  },
-  setLoginSuccessful(state, isSuccessful) {
-    state.loginSuccessful = isSuccessful;
   },
   setLogoutSuccessful(state, isSuccessful) {
     state.logoutSuccessful = isSuccessful;

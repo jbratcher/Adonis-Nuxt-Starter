@@ -39,7 +39,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     "@nuxtjs/axios",
     "@nuxtjs/auth",
-    "@nuxtjs/pwa"
+    "@nuxtjs/pwa",
+    "@nuxtjs/toast"
   ],
   /*
    ** Nuxtjs auth module
@@ -76,6 +77,23 @@ export default {
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
     baseURL: "http://localhost:3333/"
+  },
+  /*
+   ** Nuxt Toast Module
+   ** https://github.com/nuxt-community/modules/tree/master/packages/toast
+   */
+  toast: {
+    position: "top-right",
+    register: [
+      // Register custom toasts
+      {
+        name: "welcome-user",
+        message: "Hi, username",
+        options: {
+          type: "info"
+        }
+      }
+    ]
   },
   /*
    ** vuetify module configuration

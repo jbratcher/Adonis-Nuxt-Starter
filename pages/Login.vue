@@ -26,16 +26,6 @@
           type="password"
           autocomplete="new-password"
         />
-        <v-alert
-          border="left"
-          close-text="Close"
-          color="warning"
-          dark
-          dismissible
-          :value="Boolean(loginErrorMessage)"
-          type="error"
-          >{{ loginErrorMessage }}</v-alert
-        >
         <v-btn @click="login" dark width="fit-content">
           <v-icon class="mr-3">{{ loginIcon }}</v-icon
           >Login
@@ -57,12 +47,12 @@ export default {
   data: () => ({
     loginIcon: mdiLogin,
     email: "",
-    password: "",
-    loginErrorMessage: ""
+    password: ""
   }),
   methods: {
-    ...mapMutations(["setLoginSuccessful"]),
     async login() {
+      let loginToast = this.$toasted.show("Logging you in...");
+      loginToast.goAway(1500);
       await this.$auth
         .loginWith("local", {
           data: {
@@ -73,13 +63,11 @@ export default {
         .then(response => {
           this.$auth.setToken("local", "Bearer " + response.data.token);
           this.$router.replace("/");
-          this.setLoginSuccessful(true);
         })
         .catch(error => {
-          const errorMessage = error.response.data[0].message;
-          this.loginErrorMessage = errorMessage;
-          this.setLoginSuccessful(false);
+          this.$toast.error(`Login error: ${error.response}`).goAway(3000);
         });
+      this.$toast.success(`Welcome, ${this.$auth.user.full_name}`).goAway(3000);
     }
   }
 };

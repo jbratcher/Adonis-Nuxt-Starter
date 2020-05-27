@@ -119,10 +119,9 @@ export default {
     logoutIcon: mdiLogout
   }),
   methods: {
-    ...mapMutations(["setLoginSuccessful", "setLogoutSuccessful"]),
     async logout() {
       await this.$auth.logout();
-      this.setLogoutSuccessful(true);
+      this.$toast.success("Logged you out").goAway(2000);
     }
   }
 };

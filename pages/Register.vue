@@ -66,32 +66,50 @@
 import { mapMutations } from "vuex";
 import { mdiAccountPlus } from "@mdi/js";
 export default {
-  data() {
-    return {
-      accountPlusIcon: mdiAccountPlus,
-      newUser: {
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-        password_confirmation: ""
-      },
-      errorMessage: ""
-    };
-  },
+  data: () => ({
+    accountPlusIcon: mdiAccountPlus,
+    newUser: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      password_confirmation: ""
+    },
+    errorMessage: ""
+  }),
   methods: {
-    ...mapMutations(["setRegistrationSuccessful"]),
     async register() {
       await this.$axios
         .post("/auth/register", this.newUser)
         .then(response => {
-          this.setRegistrationSuccessful(true);
+          this.login();
         })
         .catch(error => {
-          console.log(`Register/login error: ${error}`);
-          this.errorMessage = error.response.data[0].message;
-          this.setRegistrationSuccessful(false);
+          this.$toast.error(`Login error: ${error.response}`);
         });
+      this.$toast.clear();
+      this.$toast
+        .info(
+          `Thanks for registering! You will receive a confirmation email shortly at ${this.newUser.email}`
+        )
+        .goAway(6000);
+    },
+    async login() {
+      await this.$auth
+        .loginWith("local", {
+          data: {
+            uid: this.newUser.email,
+            password: this.newUser.password
+          }
+        })
+        .then(response => {
+          this.$auth.setToken("local", "Bearer " + response.data.token);
+          this.$router.replace("/");
+        })
+        .catch(error => {
+          this.$toast.error(`Login error: ${error.response}`);
+        });
+      this.$toast.success(`Welcome, ${this.newUser.email}`).goAway(3000);
     }
   }
 };
