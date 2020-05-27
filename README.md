@@ -8,7 +8,15 @@ This project features an integrated Nuxt/Adonis full-stack application.
 
 Features:
 
+- User Module
+
+  - Register, login, logout, and manage user profiles
+  - New registration email with link to verify account
+  - Forgot password/password reset
+  - Authentication and Authorization
+
 - Example CRUD
+
   - Adonis migration, model and controller
   - Adonis CRUD routes
   - SQlite3 Database with example resource table

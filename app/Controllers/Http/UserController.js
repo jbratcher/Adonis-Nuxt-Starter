@@ -58,7 +58,6 @@ class UserController {
 
   // verify a new user's account by token
   async verifyEmail({ request, params, session, response }) {
-    console.log("verifying email");
     const token = request.input("token");
     const user = await Persona.verifyEmail(token);
     session.flash({ message: "Email verified" });

@@ -1,20 +1,8 @@
 export const state = () => ({
-  loginSuccessful: {
-    type: Boolean,
-    default: false
-  },
-  logoutSuccessful: {
-    type: Boolean,
-    default: false
-  },
-  passwordChanged: {
-    type: Boolean,
-    default: false
-  },
-  profileUpdated: {
-    type: Boolean,
-    default: false
-  }
+  loginSuccessful: false,
+  logoutSuccessful: false,
+  passwordChanged: false,
+  profileUpdated: false
 });
 
 export const getters = {
@@ -34,7 +22,7 @@ export const mutations = {
     state.loginSuccessful = false;
   },
   resetLogoutSuccessful(state) {
-    state.loginSuccessful = false;
+    state.logoutSuccessful = false;
   },
   resetPasswordChanged(state) {
     state.passwordChanged = false;
@@ -46,7 +34,7 @@ export const mutations = {
     state.loginSuccessful = isSuccessful;
   },
   setLogoutSuccessful(state, isSuccessful) {
-    state.loginSuccessful = isSuccessful;
+    state.logoutSuccessful = isSuccessful;
   },
   setPasswordChanged(state, isChanged) {
     state.passwordChanged = isChanged;
@@ -63,7 +51,6 @@ export const actions = {
 
   // verify a newly create user's account from an email token link
   async verifyEmailWithToken({ commit }, token) {
-    console.log(token);
     await this.$axios
       .$get(`/auth/verify-email?token=${token}`)
       .then(response => console.log(response))

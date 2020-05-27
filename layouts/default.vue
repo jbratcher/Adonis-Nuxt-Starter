@@ -39,27 +39,27 @@
       <v-alert
         @input="setLoginSuccessful(false)"
         border="left"
-        close-text="Close"
-        class="mx-auto"
+        close-text="Close Loging Notification"
+        :class="mx - auto"
         dark
         dismissible
-        transition="fade"
+        transition="scale-transition"
         type="success"
         :value="Boolean(loginSuccessful)"
-        width="80vw"
+        :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
         >{{ loginSuccessMessage }}</v-alert
       >
       <v-alert
         @input="setLogoutSuccessful(false)"
         border="left"
-        close-text="Close"
-        class="mx-auto"
+        close-text="Close Logout Notification"
+        :class="mx - auto"
         dark
         dismissible
-        transition="fade"
+        transition="scale-transition"
         type="success"
         :value="Boolean(logoutSuccessful)"
-        width="80vw"
+        :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
         >{{ logoutSuccessMessage }}</v-alert
       >
       <nuxt />
@@ -108,25 +108,25 @@ export default {
         title: "Register",
         to: "/register"
       }
-    ],
-    loginSuccessMessage: "",
-    logoutSuccessMessage: ""
+    ]
   }),
   computed: {
-    ...mapState(["loginSuccessful", "logoutSuccessful"])
+    ...mapState(["loginSuccessful", "logoutSuccessful"]),
+    loginSuccessMessage() {
+      if (this.loginSuccessful) {
+        return `You have been logged in as ${this.$auth.user.full_name}`;
+      }
+    },
+    logoutSuccessMessage() {
+      if (this.logoutSuccessful) {
+        return `You have been logged out`;
+      }
+    }
   },
   methods: {
     ...mapMutations(["setLoginSuccessful", "setLogoutSuccessful"])
   },
-  mounted() {
-    if (this.loginSuccessful) {
-      console.log(this.$auth.user);
-      console.log(this.$auth.user.full_name);
-      this.loginSuccessMessage = `You have been logged in as ${this.$auth.user.full_name}`;
-    } else if (this.logoutSuccessful) {
-      this.logoutSuccessMessage = `You have been logged out`;
-    }
-  }
+  mounted() {}
 };
 </script>
 
