@@ -13,31 +13,43 @@
         </h1>
 
         <v-text-field
-          v-model="first_name"
+          v-model="newUser.first_name"
           label="First Name"
           placeholder="First Name"
         />
         <v-text-field
-          v-model="last_name"
+          v-model="newUser.last_name"
           label="Last Name"
           placeholder="Last Name"
         />
-        <v-text-field v-model="email" label="Email" placeholder="Email" />
         <v-text-field
-          v-model="password"
+          v-model="newUser.email"
+          label="Email"
+          placeholder="Email"
+        />
+        <v-text-field
+          v-model="newUser.password"
           label="Password"
           placeholder="Password"
           type="password"
           autocomplete="new-password"
         />
         <v-text-field
-          v-model="password_confirmation"
+          v-model="newUser.password_confirmation"
           label="Confirm Password"
           placeholder="Confirm Password"
           type="password"
           autocomplete="new-password"
         />
-        <v-alert v-model="error" type="error">{{ errorMessage }}</v-alert>
+        <v-alert
+          border="left"
+          close-text="Close"
+          dark
+          dismissible
+          :value="Boolean(errorMessage)"
+          type="error"
+          >{{ errorMessage }}</v-alert
+        >
         <v-btn @click="register" dark width="fit-content">
           <v-icon class="mr-3">{{ accountPlusIcon }}</v-icon
           >Register
@@ -51,55 +63,35 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { mdiAccountPlus } from "@mdi/js";
 export default {
   data() {
     return {
       accountPlusIcon: mdiAccountPlus,
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
-      error: false,
+      newUser: {
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        password_confirmation: ""
+      },
       errorMessage: ""
     };
   },
   methods: {
-    register() {
-      try {
-        const newUser = {
-          email: this.email,
-          password: this.password,
-          password_confirmation: this.password_confirmation,
-          first_name: this.first_name,
-          last_name: this.last_name
-        };
-
-        this.$axios
-          .post("/auth/register", newUser)
-          .then(response => {
-            this.login();
-          })
-          .catch(error => console.log(`Register/login error: ${error}`));
-      } catch (e) {
-        this.error = true;
-        this.errorMessage = e.response.data[0].message;
-      }
-    },
-    login() {
-      this.$auth
-        .loginWith("local", {
-          data: {
-            uid: this.email,
-            password: this.password
-          }
-        })
+    ...mapMutations(["setRegistrationSuccessful"]),
+    async register() {
+      await this.$axios
+        .post("/auth/register", this.newUser)
         .then(response => {
-          this.$auth.setToken("local", "Bearer " + response.data.token);
-          this.$router.replace("/");
+          this.setRegistrationSuccessful(true);
         })
-        .catch(error => console.log(`Login Error: ${error}`));
+        .catch(error => {
+          console.log(`Register/login error: ${error}`);
+          this.errorMessage = error.response.data[0].message;
+          this.setRegistrationSuccessful(false);
+        });
     }
   }
 };

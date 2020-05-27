@@ -3,7 +3,9 @@
     <!-- Header Area -->
     <v-app-bar app elevate-on-scroll>
       <v-toolbar-title>
-        Adonis Nuxt Starter
+        <nuxt-link class="black--text" to="/">
+          Adonis Nuxt Starter
+        </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
       <v-app-bar-nav-icon
@@ -36,11 +38,12 @@
     <!-- Nuxt content -->
     <v-content>
       <!-- User Notifications -->
+      <!-- Login Success -->
       <v-alert
         @input="setLoginSuccessful(false)"
         border="left"
-        close-text="Close Loging Notification"
-        :class="mx - auto"
+        close-text="Close Login Notification"
+        class="mx-auto"
         dark
         dismissible
         transition="scale-transition"
@@ -49,11 +52,12 @@
         :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
         >{{ loginSuccessMessage }}</v-alert
       >
+      <!-- Logout Success -->
       <v-alert
         @input="setLogoutSuccessful(false)"
         border="left"
         close-text="Close Logout Notification"
-        :class="mx - auto"
+        class="mx-auto"
         dark
         dismissible
         transition="scale-transition"
@@ -61,6 +65,20 @@
         :value="Boolean(logoutSuccessful)"
         :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
         >{{ logoutSuccessMessage }}</v-alert
+      >
+      <!-- Registration Success -->
+      <v-alert
+        @input="setRegistrationSuccessful(false)"
+        border="left"
+        close-text="Close Registration Notification"
+        class="mx-auto"
+        dark
+        dismissible
+        transition="scale-transition"
+        type="success"
+        :value="Boolean(registrationSuccessful)"
+        :width="$breakpoint.mdAndUp ? '50vw' : '100vw'"
+        >{{ registrationSuccessMessage }}</v-alert
       >
       <nuxt />
     </v-content>
@@ -111,7 +129,11 @@ export default {
     ]
   }),
   computed: {
-    ...mapState(["loginSuccessful", "logoutSuccessful"]),
+    ...mapState([
+      "loginSuccessful",
+      "logoutSuccessful",
+      "registrationSuccessful"
+    ]),
     loginSuccessMessage() {
       if (this.loginSuccessful) {
         return `You have been logged in as ${this.$auth.user.full_name}`;
@@ -121,10 +143,19 @@ export default {
       if (this.logoutSuccessful) {
         return `You have been logged out`;
       }
+    },
+    registrationSuccessMessage() {
+      if (this.registrationSuccessful) {
+        return `Thanks for registering! We will email you an account confirmation link.`;
+      }
     }
   },
   methods: {
-    ...mapMutations(["setLoginSuccessful", "setLogoutSuccessful"])
+    ...mapMutations([
+      "setLoginSuccessful",
+      "setLogoutSuccessful",
+      "setRegistrationSuccessful"
+    ])
   },
   mounted() {}
 };

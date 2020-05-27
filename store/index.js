@@ -2,7 +2,8 @@ export const state = () => ({
   loginSuccessful: false,
   logoutSuccessful: false,
   passwordChanged: false,
-  profileUpdated: false
+  profileUpdated: false,
+  registrationSuccessful: false
 });
 
 export const getters = {
@@ -18,17 +19,14 @@ export const getters = {
 };
 
 export const mutations = {
-  resetLoginSuccessful(state) {
-    state.loginSuccessful = false;
-  },
-  resetLogoutSuccessful(state) {
-    state.logoutSuccessful = false;
-  },
   resetPasswordChanged(state) {
     state.passwordChanged = false;
   },
   resetProfileUpdated(state) {
     state.profileUpdated = false;
+  },
+  resetRegistrationSuccessful(state) {
+    state.registrationSuccessful = false;
   },
   setLoginSuccessful(state, isSuccessful) {
     state.loginSuccessful = isSuccessful;
@@ -41,6 +39,9 @@ export const mutations = {
   },
   setProfileUpdated(state, isUpdated) {
     state.profileUpdated = isUpdated;
+  },
+  setRegistrationSuccessful(state, isSuccessful) {
+    state.registrationSuccessful = isSuccessful;
   }
 };
 
