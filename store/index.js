@@ -105,9 +105,6 @@ export const actions = {
 
   // password reset method
   async updateUserPasswordByToken({ commit }, payload) {
-    console.log(payload.updatePassword.password);
-    console.log(payload.updatePassword.password_confirmation);
-    console.log(payload.token);
     await this.$axios
       .$post(
         `/auth/update/password-by-token?token=${encodeURIComponent(
@@ -118,8 +115,13 @@ export const actions = {
           password_confirmation: payload.updatePassword.password_confirmation
         }
       )
-      .then(response => console.log(response))
-      .catch(e => console.log(e));
+      .then(() => {
+        this.$toast.success("Your password has been updated").goAway(3000);
+        this.$router.replace("/login");
+      })
+      .catch(error =>
+        this.$toast.error(`Password update error: ${error}`).goAway(5000)
+      );
   },
 
   // generate a forgot password email with token link and send to user

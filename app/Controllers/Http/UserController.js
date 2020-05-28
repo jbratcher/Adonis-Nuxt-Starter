@@ -61,6 +61,7 @@ class UserController {
     const token = request.input("token");
     const user = await Persona.verifyEmail(token);
     session.flash({ message: "Email verified" });
+    return user;
   }
 
   // update user profile information
@@ -101,12 +102,12 @@ class UserController {
       "password_confirmation"
     ]);
     const user = await auth.user;
-    await Persona.updatePassword(user, payload);
+    return await Persona.updatePassword(user, payload);
   }
 
   // send forgot password email with token link
   async forgotPassword({ request }) {
-    await Persona.forgotPassword(request.input("uid"));
+    return await Persona.forgotPassword(request.input("uid"));
   }
 
   // update user password by token
@@ -116,6 +117,7 @@ class UserController {
     const payload = request.only(["password", "password_confirmation"]);
     console.log("Payload", payload);
     const user = await Persona.updatePasswordByToken(token, payload);
+    return user;
   }
 }
 

@@ -52,7 +52,13 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
-import { mdiAccountPlus, mdiLogin, mdiMenu } from "@mdi/js";
+import {
+  mdiAccountPlus,
+  mdiFormatListBulletedSquare,
+  mdiLogin,
+  mdiMenu,
+  mdiPlusCircle
+} from "@mdi/js";
 import MenuLinks from "../components/MenuLinks";
 export default {
   components: {
@@ -62,12 +68,12 @@ export default {
     drawer: false,
     generalLinks: [
       {
-        icon: "mdi-format-list-bulleted-square",
+        icon: mdiFormatListBulletedSquare,
         title: "Resources",
         to: "/resources"
       },
       {
-        icon: "mdi-plus-circle",
+        icon: mdiPlusCircle,
         title: "Create",
         to: "/resources/create"
       }
@@ -106,14 +112,16 @@ html,
 body,
 .v-application {
   font-family: "Poppins", sans-serif;
+  font-size: 16px;
   line-height: 1.5;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
   word-break: keep-all;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
 }
 
 .v-toolbar__content {
@@ -122,6 +130,12 @@ body,
 }
 
 .v-application {
+  .v-card__title,
+  .v-card__subtitle,
+  .v-card__text {
+    word-break: keep-all;
+  }
+
   ul,
   ol {
     padding-left: 0;
@@ -160,6 +174,20 @@ body,
     code:before {
       content: "";
     }
+  }
+
+  .v-text-field--outlined fieldset {
+    border-color: #ccc;
+  }
+}
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 </style>

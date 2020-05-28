@@ -1,20 +1,54 @@
+import colors from "vuetify/es5/util/colors";
+import * as strUtil from "./utils/str-utils.js";
+
+// format package name for title display
+const title = strUtil.titleCase(
+  process.env.npm_package_name.replace(/-/g, " ")
+);
+
 export default {
   mode: "universal",
+  /*
+   ** env variables used in vue components
+   */
+  env: {
+    title: title || "",
+    description: process.env.npm_package_description || ""
+  },
   /*
    ** Headers of the page
    */
   head: {
-    title: process.env.npm_package_name || "",
+    htmlAttrs: {
+      lang: "en"
+    },
+    title: title || "",
     meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      {
+        charset: "utf-8"
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1"
+      },
       {
         hid: "description",
         name: "description",
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      {
+        rel: "icon",
+        type: "image/x-icon",
+        href: "/favicon.ico"
+      },
+      {
+        rel: "preload",
+        href: "https://cdn.jsdelivr.net/npm/animate.css@3.5.1",
+        as: "style"
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
@@ -40,7 +74,8 @@ export default {
     "@nuxtjs/axios",
     "@nuxtjs/auth",
     "@nuxtjs/pwa",
-    "@nuxtjs/toast"
+    "@nuxtjs/toast",
+    "nuxt-webfontloader"
   ],
   /*
    ** Nuxtjs auth module
@@ -79,6 +114,13 @@ export default {
     baseURL: "http://localhost:3333/"
   },
   /*
+   ** Nuxt Markdown Module
+   ** https://github.com/nuxt-community/modules/tree/master/packages/markdownit
+   */
+  markdownit: {
+    injected: true
+  },
+  /*
    ** Nuxt Toast Module
    ** https://github.com/nuxt-community/modules/tree/master/packages/toast
    */
@@ -101,8 +143,30 @@ export default {
    */
   vuetify: {
     treeShake: true,
+    customVariables: ["~/assets/variables.scss"],
+    defaultAssets: {
+      icons: false
+    },
     theme: {
-      light: true
+      light: true,
+      options: {
+        minifyTheme: function(css) {
+          return process.env.NODE_ENV === "production"
+            ? css.replace(/[\r\n|\r|\n]/g, "")
+            : css;
+        }
+      }
+    }
+  },
+  /*
+  // nuxt-webfontloader
+  // handles efficient loading of web fonts
+  */
+  webfontloader: {
+    // use custom instead of google property to prevent flash of invisible text(foit)
+    custom: {
+      families: ["Open Sans"],
+      urls: ["https://fonts.googleapis.com/css?family=Open+Sans&display=swap"]
     }
   },
   /*
