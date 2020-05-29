@@ -11,9 +11,8 @@ let conditionalBaseURL = "";
 if (process.env.NODE_ENV === "development") {
   conditionalBaseURL = "http://localhost:3333/";
 } else if (process.env.NODE_ENV === "production") {
-  conditionalBaseURL = "https://evening-thicket-01115.herokuapp.com:3333/";
+  conditionalBaseURL = "https://evening-thicket-01115.herokuapp.com/";
 }
-console.log(process.env.NODE_ENV);
 
 export default {
   mode: "universal",
