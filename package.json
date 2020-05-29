@@ -10,6 +10,7 @@
     "build": "nuxt build",
     "start:client": "nuxt start",
     "generate": "nuxt generate",
+    "dev:server": "adonis serve --dev",
     "start:server": "node server.js",
     "test:server": "node ace test"
   },

@@ -111,7 +111,7 @@ export default {
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "https://quiet-refuge-93880.herokuapp.com/:3333/"
+    baseURL: "https://quiet-refuge-93880.herokuapp.com:3333/"
   },
   /*
    ** Nuxt Markdown Module
