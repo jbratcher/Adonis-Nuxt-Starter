@@ -1,5 +1,5 @@
 "use strict";
-
+const Env = use("Env");
 const Helpers = use("Helpers");
 const Persona = use("Persona");
 const User = use("App/Models/User");
@@ -80,7 +80,7 @@ class UserController {
     const user = await auth.user;
     const file = await request.file("profile_image_source");
     // move the image file to the static/images folder
-    await file.move(Helpers.appRoot("static/images"), {
+    await file.move(Helpers.appRoot("public/images"), {
       name: `${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`,
       overwrite: true
     });
@@ -89,7 +89,9 @@ class UserController {
       return file.error();
     }
     // Update the image link in the user's image source column
-    user.profile_image_source = `/images/${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`;
+    user.profile_image_source = `${Env.get("APP_URL")}/images/${
+      user.first_name
+    }-${user.last_name}-${user.id}.${file.subtype}`;
     user.save();
     return file;
   }
