@@ -6,6 +6,15 @@ const title = strUtil.titleCase(
   process.env.npm_package_name.replace(/-/g, " ")
 );
 
+let conditionalBaseURL = "";
+
+if (process.env.NODE_ENV === "development") {
+  conditionalBaseURL = "http://localhost:3333/";
+} else if (process.env.NODE_ENV === "production") {
+  conditionalBaseURL = "https://evening-thicket-01115.herokuapp.com:3333/";
+}
+console.log(process.env.NODE_ENV);
+
 export default {
   mode: "universal",
   /*
@@ -111,7 +120,7 @@ export default {
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "http://localhost:3333/"
+    baseURL: conditionalBaseURL
   },
   /*
    ** Nuxt Markdown Module
@@ -177,5 +186,11 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  /*
+   ** Generate static routes
+   */
+  generate: {
+    fallback: true
   }
 };

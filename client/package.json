@@ -11,6 +11,10 @@
     "start": "nuxt start",
     "generate": "nuxt generate"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbratcher/Adonis-Nuxt-Starter"
+  },
   "license": "MIT",
   "dependencies": {
     "@mdi/js": "^5.1.45",
