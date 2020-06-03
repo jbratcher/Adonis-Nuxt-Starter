@@ -1,61 +1,93 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-container v-if="this.$auth.user" class="profile-card">
-          <!-- User avatar -->
-          <v-avatar size="128">
-            <v-img :src="this.$auth.user.profile_image_source" />
-          </v-avatar>
+  <v-container class="pa-0" fill-height fluid>
+    <v-row class="full-height">
+      <!-- User menu navigation -->
+      <v-col class="py-0" cols="3">
+        <v-card class="mx-6" flat>
+          <v-navigation-drawer height="100%" permanent width="100%">
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title class="title">
+                  Profile
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ this.$auth.user.full_name }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
-          <!-- edit profile -->
-          <v-container class="pa-0">
-            <v-row justify="center" align="center">
-              <v-col cols="2" class="d-flex justify-center">
+            <v-list dense nav>
+              <v-list-item
+                v-for="item in items"
+                :key="item.title"
+                link
+                @click="item.action"
+              >
+                <v-list-item-icon>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-navigation-drawer>
+        </v-card>
+      </v-col>
+
+      <!-- User display content -->
+      <v-col>
+        <v-container v-if="this.$auth.user" class="py-0 profile-card">
+          <v-row>
+            <v-col>
+              <!-- User avatar -->
+              <v-card color="transparent" flat>
+                <v-avatar size="128">
+                  <v-img :src="this.$auth.user.profile_image_source" />
+                </v-avatar>
+                <!-- Avatar floating action buttons -->
                 <!-- Edit/Cancel Edit Event Button -->
                 <v-btn
                   @click="toggleEditMode"
                   :color="editMode ? 'warning' : 'secondary'"
+                  class="profile-edit-button"
+                  fab
+                  absolute
+                  small
                 >
-                  <v-icon>{{ editMode ? pencilOffIcon : pencilIcon }}</v-icon>
+                  <v-icon small>{{
+                    editMode ? pencilOffIcon : pencilIcon
+                  }}</v-icon>
                 </v-btn>
                 <!-- Update Event -->
                 <v-btn
                   v-if="editMode"
                   @click="updateUser"
                   color="primary darken-2"
+                  class="profile-save-button"
+                  fab
+                  absolute
+                  small
                 >
-                  <v-icon>{{ contentSaveIcon }}</v-icon>
+                  <v-icon small>{{ contentSaveIcon }}</v-icon>
                 </v-btn>
-              </v-col>
+              </v-card>
+            </v-col>
+            <v-col class="align-self-end">
+              <!-- User display info -->
+              <v-card class="ml-3" color="transparent" flat>
+                <p class="body-1 mb-0">
+                  {{ this.$auth.user.full_name }}
+                </p>
+                <p class="caption mb-1">{{ this.$auth.user.email }}</p>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
 
-              <!-- update password -->
-              <v-col cols="2" class="d-flex justify-center">
-                <!-- Edit/Cancel Edit Event Button -->
-                <v-btn
-                  @click="toggleEditPasswordMode"
-                  :color="editPasswordMode ? 'warning' : 'secondary'"
-                >
-                  <v-icon>{{
-                    editPasswordMode ? cancelIcon : accountLockIcon
-                  }}</v-icon>
-                </v-btn>
-                <!-- Update Event -->
-                <v-btn
-                  v-if="editPasswordMode"
-                  @click="updateUserPasswordClient"
-                  color="primary darken-2"
-                >
-                  <v-icon>{{ contentSaveIcon }}</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-
-          <p>{{ this.$auth.user.email }}</p>
-
-          <p v-if="!editMode">{{ this.$auth.user.full_name }}</p>
-
+        <!-- Edit Fields -->
+        <v-container class="py-0">
           <v-card color="transparent" flat min-width="30vw">
             <!-- edit profile fields -->
             <v-text-field
@@ -118,6 +150,32 @@
           </v-card>
         </v-container>
 
+        <!-- Change Password -->
+        <v-container class="pa-0">
+          <v-row justify="center" align="center">
+            <v-col v-if="editPasswordMode" class="d-flex justify-center">
+              <!-- Edit/Cancel Change Password -->
+              <v-btn
+                @click="toggleEditPasswordMode"
+                :color="editPasswordMode ? 'warning' : 'secondary'"
+                class="body-2 mr-3"
+                outlined
+              >
+                Cancel
+                <v-icon class="ml-2">{{
+                  editPasswordMode ? cancelIcon : accountLockIcon
+                }}</v-icon>
+              </v-btn>
+              <!-- Update Event -->
+              <v-btn @click="updateUserPasswordClient" color="primary darken-2">
+                Save
+                <v-icon>{{ contentSaveIcon }}</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+
+        <!-- User resources list -->
         <v-container>
           <h3 v-if="userResources.length > 0" class="mb-6">Resources</h3>
           <v-list
@@ -137,6 +195,7 @@
             </v-list-item>
           </v-list>
         </v-container>
+        <!-- End Main -->
       </v-col>
     </v-row>
   </v-container>
@@ -145,42 +204,64 @@
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import {
+  mdiAccount,
   mdiAccountKey,
   mdiAccountLock,
   mdiCamera,
   mdiCancel,
   mdiContentSave,
+  mdiEmailEdit,
+  mdiKey,
   mdiPencil,
   mdiPencilOff
 } from "@mdi/js";
 export default {
-  data: () => ({
-    accountLockIcon: mdiAccountLock,
-    cameraIcon: mdiCamera,
-    cancelIcon: mdiCancel,
-    contentSaveIcon: mdiContentSave,
-    editMode: false,
-    editPasswordMode: false,
-    nameRules: [
-      v => !!v || "Name is required",
-      v => (v && v.length <= 50) || "Name must be less than 50 characters"
-    ],
-    pencilIcon: mdiPencil,
-    pencilOffIcon: mdiPencilOff,
-    profileImageRules: [
-      value =>
-        !value ||
-        value.size < 2000000 ||
-        "Profile image size should be less than 2 MB!"
-    ],
-    updatePassword: {
-      old_password: "",
-      password: "",
-      password_confirmation: ""
-    },
-    userProfileImage: null,
-    valid: true
-  }),
+  data() {
+    return {
+      accountLockIcon: mdiAccountLock,
+      cameraIcon: mdiCamera,
+      cancelIcon: mdiCancel,
+      contentSaveIcon: mdiContentSave,
+      editMode: false,
+      editPasswordMode: false,
+      items: [
+        {
+          action: null,
+          icon: mdiAccount,
+          title: "User Info"
+        },
+        {
+          action: null,
+          icon: mdiEmailEdit,
+          title: "Change Email"
+        },
+        {
+          action: this.toggleEditPasswordMode,
+          icon: mdiKey,
+          title: "Change Password"
+        }
+      ],
+      nameRules: [
+        v => !!v || "Name is required",
+        v => (v && v.length <= 50) || "Name must be less than 50 characters"
+      ],
+      pencilIcon: mdiPencil,
+      pencilOffIcon: mdiPencilOff,
+      profileImageRules: [
+        value =>
+          !value ||
+          value.size < 2000000 ||
+          "Profile image size should be less than 2 MB!"
+      ],
+      updatePassword: {
+        old_password: "",
+        password: "",
+        password_confirmation: ""
+      },
+      userProfileImage: null,
+      valid: true
+    };
+  },
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"]),
     ...mapState("resource", ["userResources"])
@@ -236,6 +317,16 @@ export default {
     font-size: 1.25rem;
     font-weight: 300;
   }
+}
+
+.profile-edit-button {
+  top: 0;
+  right: -15px;
+}
+
+.profile-save-button {
+  top: 0;
+  right: -60px;
 }
 
 @media screen and (min-width: 768px) {

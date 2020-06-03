@@ -194,4 +194,9 @@ body,
     scroll-behavior: auto !important;
   }
 }
+
+// helper classes
+.full-height {
+  min-height: 100%;
+}
 </style>
