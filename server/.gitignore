@@ -97,3 +97,8 @@ database/adonis.sqlite
 
 # tmp
 tmp/
+
+# local development user images
+public/images/*
+
+

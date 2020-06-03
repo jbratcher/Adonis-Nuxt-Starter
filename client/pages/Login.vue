@@ -72,7 +72,7 @@ export default {
           }
         })
         .then(response => {
-          this.$toasted.show("Logging you in...").goAway(1500);
+          this.$toast.show("Logging you in...").goAway(1500);
           this.$auth.setToken("local", "Bearer " + response.data.token);
           this.$router.replace("/");
           this.$toast

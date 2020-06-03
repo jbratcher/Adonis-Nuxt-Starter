@@ -44,6 +44,16 @@ export const mutations = {
   },
   setRegistrationSuccessful(state, isSuccessful) {
     state.registrationSuccessful = isSuccessful;
+  },
+  setUserFirstName(state, first_name) {
+    console.log(first_name);
+    state.auth.user.first_name = first_name;
+  },
+  setUserLastName(state, last_name) {
+    state.auth.user.last_name = last_name;
+  },
+  setUserProfileImageSource(state, profile_image_source) {
+    state.auth.user.profile_image_source = profile_image_source;
   }
 };
 
@@ -61,9 +71,9 @@ export const actions = {
   },
 
   // update a user's edited profile
-  async updateUserProfile({ commit, dispatch }, user) {
+  async updateUserProfile({ commit, dispatch }, { user, profileImage }) {
     // add image to static folder before update user profile
-    dispatch("updateProfilePic", user);
+    dispatch("updateProfilePic", profileImage);
     await this.$axios
       .$patch("/auth/update", user)
       .then(response => {
@@ -75,10 +85,10 @@ export const actions = {
   },
 
   // sync add new user photo to images folder and update user profile image source
-  updateProfilePic({ commit }, user) {
+  updateProfilePic({ commit }, profileImage) {
     // new images must be post to Adonis via form data through axios
     let formData = new FormData();
-    formData.append("profile_image_source", user.profile_image_source);
+    formData.append("profileImage", profileImage);
     let url = "/auth/update/profile-pic";
     let config = {
       headers: {
@@ -93,6 +103,7 @@ export const actions = {
     })
       .then(response => {
         console.log(response);
+        commit("setUserProfileImageSource", response.data.profile_image_source);
       })
       .catch(e => console.log(error));
   },

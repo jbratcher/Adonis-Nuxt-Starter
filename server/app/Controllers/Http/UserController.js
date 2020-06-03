@@ -24,10 +24,7 @@ class UserController {
   async logout({ auth }) {
     const user = await auth.getUser();
     const token = await auth.getAuthHeader();
-    await user
-      .tokens()
-      .where("token", token)
-      .update({ is_revoked: true });
+    await user.tokens().where("token", token).update({ is_revoked: true });
     return user;
   }
 
@@ -37,7 +34,7 @@ class UserController {
       "first_name",
       "last_name",
       "password",
-      "password_confirmation"
+      "password_confirmation",
     ]);
     const { first_name, last_name } = payload;
     payload.full_name = `${first_name} ${last_name}`;
@@ -78,22 +75,25 @@ class UserController {
   // must be a post request since a new file is created
   async updateProfilePic({ request, auth }) {
     const user = await auth.user;
-    const file = await request.file("profile_image_source");
+    const file = await request.file("profileImage");
     // move the image file to the static/images folder
-    await file.move(Helpers.appRoot("public/images"), {
-      name: `${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`,
-      overwrite: true
-    });
-    // error handling for file move
-    if (!file.moved()) {
-      return file.error();
+    if (file) {
+      await file.move(Helpers.appRoot("public/images"), {
+        name: `${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`,
+        overwrite: true,
+      });
+      // error handling for file move
+      if (!file.moved()) {
+        return file.error();
+      }
+      // Update the image link in the user's image source column
+      user.profile_image_source = `${Env.get("APP_URL")}/images/${
+        user.first_name
+      }-${user.last_name}-${user.id}.${file.subtype}`;
+      user.save();
+      return user;
     }
-    // Update the image link in the user's image source column
-    user.profile_image_source = `${Env.get("APP_URL")}/images/${
-      user.first_name
-    }-${user.last_name}-${user.id}.${file.subtype}`;
-    user.save();
-    return file;
+    return "No file uploaded";
   }
 
   // change user password from profile edit
@@ -101,7 +101,7 @@ class UserController {
     const payload = request.only([
       "old_password",
       "password",
-      "password_confirmation"
+      "password_confirmation",
     ]);
     const user = await auth.user;
     return await Persona.updatePassword(user, payload);

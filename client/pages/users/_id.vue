@@ -56,60 +56,66 @@
 
           <p v-if="!editMode">{{ this.$auth.user.full_name }}</p>
 
-          <!-- edit profile fields -->
-          <v-text-field
-            v-if="editMode"
-            v-model="user.first_name"
-            :counter="50"
-            :rules="nameRules"
-            label="First Name"
-          />
+          <v-card color="transparent" flat min-width="30vw">
+            <!-- edit profile fields -->
+            <v-text-field
+              v-if="editMode"
+              :value="this.$auth.user.first_name"
+              :counter="50"
+              :rules="nameRules"
+              @input="setUserFirstName($event)"
+              label="First Name"
+            />
 
-          <v-text-field
-            v-if="editMode"
-            v-model="user.last_name"
-            :counter="50"
-            :rules="nameRules"
-            label="Last Name"
-          />
+            <v-text-field
+              v-if="editMode"
+              :value="this.$auth.user.last_name"
+              :counter="50"
+              :rules="nameRules"
+              @input="setUserLastName($event)"
+              label="Last Name"
+            />
 
-          <v-file-input
-            v-if="editMode"
-            v-model="user.profile_image_source"
-            :rules="profileImageRules"
-            accept="image/png, image/jpeg, image/bmp"
-            placeholder="Update your profile picture"
-            prepend-icon="mdi-camera"
-            label="Profile Picture"
-          />
+            <v-file-input
+              v-if="editMode"
+              v-model="userProfileImage"
+              :rules="profileImageRules"
+              :prepend-icon="cameraIcon"
+              accept="image/png, image/jpeg, image/bmp"
+              clearable
+              full-width
+              placeholder="Update your profile picture"
+              label="Profile Picture"
+            />
 
-          <!-- change password fields -->
-          <v-text-field
-            v-if="editPasswordMode"
-            v-model="updatePassword.old_password"
-            label="Old password"
-            placeholder="Old Password"
-            type="password"
-            autocomplete="new-password"
-          />
+            <!-- change password fields -->
+            <v-text-field
+              v-if="editPasswordMode"
+              v-model="updatePassword.old_password"
+              label="Old password"
+              placeholder="Old Password"
+              type="password"
+              autocomplete="new-password"
+            />
 
-          <v-text-field
-            v-if="editPasswordMode"
-            v-model="updatePassword.password"
-            label="New Password"
-            placeholder="New Password"
-            type="password"
-            autocomplete="new-password"
-          />
+            <v-text-field
+              v-if="editPasswordMode"
+              v-model="updatePassword.password"
+              label="New Password"
+              placeholder="New Password"
+              type="password"
+              autocomplete="new-password"
+            />
 
-          <v-text-field
-            v-if="editPasswordMode"
-            v-model="updatePassword.password_confirmation"
-            label="Confirm New Password"
-            placeholder="Retype New Password"
-            type="password"
-            autocomplete="new-password"
-          />
+            <v-text-field
+              v-if="editPasswordMode"
+              v-model="updatePassword.password_confirmation"
+              label="Confirm New Password"
+              placeholder="Retype New Password"
+              type="password"
+              autocomplete="new-password"
+            />
+          </v-card>
         </v-container>
 
         <v-container>
@@ -149,9 +155,9 @@ import {
 } from "@mdi/js";
 export default {
   data: () => ({
-    cancelIcon: mdiCancel,
     accountLockIcon: mdiAccountLock,
     cameraIcon: mdiCamera,
+    cancelIcon: mdiCancel,
     contentSaveIcon: mdiContentSave,
     editMode: false,
     editPasswordMode: false,
@@ -172,11 +178,7 @@ export default {
       password: "",
       password_confirmation: ""
     },
-    user: {
-      first_name: "",
-      last_name: "",
-      profile_image_source: null
-    },
+    userProfileImage: null,
     valid: true
   }),
   computed: {
@@ -192,6 +194,7 @@ export default {
     titleCase(string) {
       return titleCase(string);
     },
+    ...mapMutations(["setUserFirstName", "setUserLastName"]),
     toggleEditMode() {
       this.editMode = !this.editMode;
     },
@@ -199,7 +202,10 @@ export default {
       this.editPasswordMode = !this.editPasswordMode;
     },
     updateUser() {
-      this.updateUserProfile(this.user);
+      this.updateUserProfile({
+        user: this.$auth.user,
+        profileImage: this.userProfileImage
+      });
       this.editMode = false;
       this.$toast.success("Profile updated...").goAway(3000);
     },

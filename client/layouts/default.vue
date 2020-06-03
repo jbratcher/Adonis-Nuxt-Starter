@@ -179,6 +179,10 @@ body,
   .v-text-field--outlined fieldset {
     border-color: #ccc;
   }
+
+  .v-input--selection-controls .v-input__control {
+    width: 100%;
+  }
 }
 
 /* Remove all animations and transitions for people that prefer not to see them */
