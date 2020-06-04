@@ -26,6 +26,7 @@ Route.post("auth/logout", "UserController.logout");
 Route.post("/auth/register", "UserController.register");
 Route.post("/auth/update/profile-pic", "UserController.updateProfilePic");
 Route.patch("/auth/update", "UserController.update");
+Route.patch("/auth/update/email", "UserController.updateEmail");
 Route.patch("/auth/update/password", "UserController.updatePassword");
 Route.get("/auth/forgot/password", "UserController.forgotPassword");
 Route.post(

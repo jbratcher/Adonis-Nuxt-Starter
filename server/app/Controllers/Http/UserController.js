@@ -71,6 +71,13 @@ class UserController {
     return updatedUser;
   }
 
+  // change user password from profile edit
+  async updateEmail({ request, auth }) {
+    const payload = request.only(["email"]);
+    const user = await auth.user;
+    return await Persona.updateProfile(user, payload);
+  }
+
   // linked with update()
   // must be a post request since a new file is created
   async updateProfilePic({ request, auth }) {
@@ -115,9 +122,7 @@ class UserController {
   // update user password by token
   async updatePasswordByToken({ request }) {
     const token = decodeURIComponent(request.input("token"));
-    console.log("Token: ", token);
     const payload = request.only(["password", "password_confirmation"]);
-    console.log("Payload", payload);
     const user = await Persona.updatePasswordByToken(token, payload);
     return user;
   }

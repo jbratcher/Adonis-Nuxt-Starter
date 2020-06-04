@@ -1,9 +1,4 @@
-export const state = () => ({
-  logoutSuccessful: false,
-  passwordChanged: false,
-  profileUpdated: false,
-  registrationSuccessful: false
-});
+export const state = () => ({});
 
 export const getters = {
   isAuthenticated(state) {
@@ -24,29 +19,10 @@ export const getters = {
 };
 
 export const mutations = {
-  resetPasswordChanged(state) {
-    state.passwordChanged = false;
-  },
-  resetProfileUpdated(state) {
-    state.profileUpdated = false;
-  },
-  resetRegistrationSuccessful(state) {
-    state.registrationSuccessful = false;
-  },
-  setLogoutSuccessful(state, isSuccessful) {
-    state.logoutSuccessful = isSuccessful;
-  },
-  setPasswordChanged(state, isChanged) {
-    state.passwordChanged = isChanged;
-  },
-  setProfileUpdated(state, isUpdated) {
-    state.profileUpdated = isUpdated;
-  },
-  setRegistrationSuccessful(state, isSuccessful) {
-    state.registrationSuccessful = isSuccessful;
+  setUserEmail(state, user_email) {
+    state.auth.user.email = user_email;
   },
   setUserFirstName(state, first_name) {
-    console.log(first_name);
     state.auth.user.first_name = first_name;
   },
   setUserLastName(state, last_name) {
@@ -62,12 +38,26 @@ export const actions = {
 
   // Adonis Persona Auth Actions
 
-  // verify a newly create user's account from an email token link
-  async verifyEmailWithToken({ commit }, token) {
+  // generate a forgot password email with token link and send to user
+  async forgotPasswordLink({ commit }, email) {
     await this.$axios
-      .$get(`/auth/verify-email?token=${token}`)
-      .then(response => console.log(response))
-      .catch(e => console.log(e));
+      .$get(`/auth/forgot/password?uid=${email}`)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => console.log(error));
+  },
+
+  // update a user's email address with verification
+  async updateUserEmail({ commit, dispatch }, updatedEmail) {
+    console.log(updatedEmail);
+    await this.$axios
+      .$patch("/auth/update/email", updatedEmail)
+      .then(response => {
+        this.$auth.setUser(response);
+        this.$toast.success("Email updated...").goAway(3000);
+      })
+      .catch(error => console.log(error));
   },
 
   // update a user's edited profile
@@ -77,9 +67,8 @@ export const actions = {
     await this.$axios
       .$patch("/auth/update", user)
       .then(response => {
-        console.log(response);
         this.$auth.setUser(response);
-        commit("setProfileUpdated", true);
+        this.$toast.success("Profile updated...").goAway(3000);
       })
       .catch(error => console.log(error));
   },
@@ -110,12 +99,11 @@ export const actions = {
 
   // change password from user profile
   async updateUserPassword({ commit, dispatch }, updatePassword) {
-    console.log(JSON.parse(JSON.stringify(updatePassword)));
     await this.$axios
       .$patch("/auth/update/password", updatePassword)
       .then(response => {
         console.log(response);
-        commit("setPasswordChanged", true);
+        this.$toast.success("Password changed...").goAway(3000);
       })
       .catch(error => console.log(error));
   },
@@ -141,14 +129,11 @@ export const actions = {
       );
   },
 
-  // generate a forgot password email with token link and send to user
-  async forgotPasswordLink({ commit }, email) {
-    console.log(email);
+  // verify a newly created user's account from an email token link
+  async verifyEmailWithToken({ commit }, token) {
     await this.$axios
-      .$get(`/auth/forgot/password?uid=${email}`)
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => console.log(error));
+      .$get(`/auth/verify-email?token=${token}`)
+      .then(response => console.log(response))
+      .catch(e => console.log(e));
   }
 };
