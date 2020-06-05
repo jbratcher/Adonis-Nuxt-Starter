@@ -27,7 +27,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-Featuring a full user module, example CRUD resources, and web optimization, this starter project pre-installs and configures a lot of common needs for you out of the box. It was built with the intent to give the developer a powerful base starting point with a lot of things every app need set up for you.
+Featuring a full user module, example CRUD resources, and web optimization, this starter project pre-installs and configures a lot of common needs for you out of the box. It was built with the intent to give the developer a powerful base starting point with a lot of things every app needs set up for you.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 

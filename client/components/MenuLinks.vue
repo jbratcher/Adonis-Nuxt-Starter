@@ -47,7 +47,7 @@
     <!-- User Profile Link -->
     <v-list-item
       v-if="isAuthenticated"
-      class="mb-0"
+      class="mt-3 mb-0"
       exact
       router
       :to="`/users/${this.$auth.user.id}`"

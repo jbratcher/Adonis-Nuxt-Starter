@@ -2,162 +2,145 @@
   <v-container class="pa-0" fill-height fluid>
     <v-row class="full-height">
       <!-- User menu navigation -->
-      <v-col class="py-0" cols="3">
-        <v-card class="mx-6" flat>
-          <v-navigation-drawer height="100%" permanent width="100%">
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="title">
-                  Profile
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ this.$auth.user.full_name }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+      <v-col
+        cols="12"
+        class="py-0 col-md-3"
+        :class="$breakpoint.mdAndUp ? '' : 'px-0'"
+      >
+        <v-card class="d-flex flex-column align-center py-6" flat>
+          <!-- User Avatar -->
+          <v-avatar :size="$breakpoint.mdAndUp ? '5rem' : '10rem'">
+            <v-img :src="this.$auth.user.profile_image_source" />
+          </v-avatar>
 
-            <v-list dense nav>
-              <v-list-item
-                v-for="item in items"
-                :key="item.title"
-                link
-                @click="item.action"
-              >
-                <v-list-item-icon>
-                  <v-icon>{{ item.icon }}</v-icon>
-                </v-list-item-icon>
+          <!-- User display info -->
 
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.title }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-navigation-drawer>
+          <p
+            class="pt-3 mb-2"
+            :class="$breakpoint.mdAndUp ? 'title' : 'display-1'"
+          >
+            {{ this.$auth.user.full_name }}
+          </p>
+          <p
+            class="font-regular mb-0"
+            :class="$breakpoint.mdAndUp ? 'subtitle-2' : 'title'"
+          >
+            {{ this.$auth.user.email }}
+          </p>
         </v-card>
       </v-col>
 
       <!-- User display content -->
       <v-col>
-        <v-container v-if="this.$auth.user" class="py-0 profile-card">
-          <v-row>
-            <v-col>
-              <!-- User avatar -->
-              <v-card color="transparent" flat>
-                <v-avatar size="128">
-                  <v-img :src="this.$auth.user.profile_image_source" />
-                </v-avatar>
-                <!-- Avatar floating action buttons -->
-                <!-- Edit/Cancel Edit Event Button -->
-                <v-btn
-                  @click="toggleEditProfileMode"
-                  :color="editProfileMode ? 'warning' : 'secondary'"
-                  class="profile-edit-button"
-                  fab
-                  absolute
-                  small
-                >
-                  <v-icon small>{{
-                    editProfileMode ? pencilOffIcon : pencilIcon
-                  }}</v-icon>
-                </v-btn>
-                <!-- Update Event -->
-                <v-btn
-                  v-if="editProfileMode"
-                  @click="updateUser"
-                  color="primary darken-2"
-                  class="profile-save-button"
-                  fab
-                  absolute
-                  small
-                >
-                  <v-icon small>{{ contentSaveIcon }}</v-icon>
-                </v-btn>
-              </v-card>
-            </v-col>
-            <v-col class="align-self-end">
-              <!-- User display info -->
-              <v-card class="ml-3" color="transparent" flat>
-                <p class="body-1 mb-0">
-                  {{ this.$auth.user.full_name }}
-                </p>
-                <p class="caption mb-1">{{ this.$auth.user.email }}</p>
-              </v-card>
+        <!-- Edit Fields -->
+        <v-card
+          class="mx-auto"
+          color="transparent"
+          flat
+          :width="$breakpoint.mdAndUp ? '50%' : '80vw'"
+        >
+          <!-- edit profile fields -->
+          <template v-if="editProfileMode">
+            <v-text-field
+              :value="this.$auth.user.first_name"
+              :counter="50"
+              :rules="nameRules"
+              @input="setUserFirstName($event)"
+              label="First Name"
+              outlined
+            />
+
+            <v-text-field
+              :value="this.$auth.user.last_name"
+              :counter="50"
+              :rules="nameRules"
+              @input="setUserLastName($event)"
+              label="Last Name"
+              outlined
+            />
+
+            <v-file-input
+              v-model="userProfileImage"
+              :rules="profileImageRules"
+              prepend-icon=""
+              :prepend-inner-icon="cameraIcon"
+              accept="image/png, image/jpeg, image/bmp"
+              clearable
+              clear-icon
+              placeholder="Update your profile picture"
+              show-size
+              label="Profile Picture"
+              outlined
+            />
+          </template>
+
+          <!-- change password fields -->
+          <template v-if="editPasswordMode">
+            <v-text-field
+              v-model="updatePassword.old_password"
+              label="Old password"
+              placeholder="Old Password"
+              type="password"
+              autocomplete="new-password"
+              outlined
+            />
+
+            <v-text-field
+              v-model="updatePassword.password"
+              label="New Password"
+              placeholder="New Password"
+              type="password"
+              autocomplete="new-password"
+              outlined
+            />
+
+            <v-text-field
+              v-model="updatePassword.password_confirmation"
+              label="Confirm New Password"
+              placeholder="Retype New Password"
+              type="password"
+              autocomplete="new-password"
+              outlined
+            />
+          </template>
+
+          <template v-if="editEmailMode">
+            <p class="body-2">Current email: {{ this.$auth.user.email }}</p>
+            <v-text-field
+              v-model="updateEmail"
+              :rules="emailRules"
+              label="New Email"
+              outlined
+            />
+          </template>
+        </v-card>
+
+        <!-- Edit Profile Action Buttons -->
+        <v-container class="pa-0">
+          <v-row justify="center" align="center">
+            <v-col v-if="editProfileMode" class="d-flex justify-center">
+              <!-- Cancel Profile Edit -->
+              <v-btn
+                @click="toggleEditProfileMode"
+                :color="editEmailMode ? 'warning' : 'secondary'"
+                class="body-2 mr-3"
+                outlined
+              >
+                Cancel
+                <v-icon class="ml-2">{{
+                  editProfileMode ? accountEditCancelIcon : accountEditIcon
+                }}</v-icon>
+              </v-btn>
+              <!-- Update Event -->
+              <v-btn @click="updateUserProfileClient" color="primary darken-2">
+                Save
+                <v-icon>{{ contentSaveIcon }}</v-icon>
+              </v-btn>
             </v-col>
           </v-row>
         </v-container>
 
-        <!-- Edit Fields -->
-        <v-container class="py-0">
-          <v-card color="transparent" flat min-width="30vw">
-            <!-- edit profile fields -->
-            <template v-if="editProfileMode">
-              <v-text-field
-                :value="this.$auth.user.first_name"
-                :counter="50"
-                :rules="nameRules"
-                @input="setUserFirstName($event)"
-                label="First Name"
-              />
-
-              <v-text-field
-                :value="this.$auth.user.last_name"
-                :counter="50"
-                :rules="nameRules"
-                @input="setUserLastName($event)"
-                label="Last Name"
-              />
-
-              <v-file-input
-                v-model="userProfileImage"
-                :rules="profileImageRules"
-                :prepend-icon="cameraIcon"
-                accept="image/png, image/jpeg, image/bmp"
-                clearable
-                full-width
-                placeholder="Update your profile picture"
-                label="Profile Picture"
-              />
-            </template>
-
-            <!-- change password fields -->
-            <template v-if="editPasswordMode">
-              <v-text-field
-                v-model="updatePassword.old_password"
-                label="Old password"
-                placeholder="Old Password"
-                type="password"
-                autocomplete="new-password"
-              />
-
-              <v-text-field
-                v-model="updatePassword.password"
-                label="New Password"
-                placeholder="New Password"
-                type="password"
-                autocomplete="new-password"
-              />
-
-              <v-text-field
-                v-model="updatePassword.password_confirmation"
-                label="Confirm New Password"
-                placeholder="Retype New Password"
-                type="password"
-                autocomplete="new-password"
-              />
-            </template>
-
-            <template v-if="editEmailMode">
-              <p class="body-2">Current email: {{ this.$auth.user.email }}</p>
-              <v-text-field
-                v-model="updateEmail"
-                :rules="emailRules"
-                label="New Email"
-              />
-            </template>
-          </v-card>
-        </v-container>
-
-        <!-- Change Password -->
+        <!-- Change Password Action Buttons -->
         <v-container class="pa-0">
           <v-row justify="center" align="center">
             <v-col v-if="editPasswordMode" class="d-flex justify-center">
@@ -182,11 +165,11 @@
           </v-row>
         </v-container>
 
-        <!-- Change Email -->
+        <!-- Change Email Action Buttons -->
         <v-container class="pa-0">
           <v-row justify="center" align="center">
             <v-col v-if="editEmailMode" class="d-flex justify-center">
-              <!-- Edit/Cancel Change Password -->
+              <!-- Edit/Cancel Change Email -->
               <v-btn
                 @click="toggleEditEmailMode"
                 :color="editEmailMode ? 'warning' : 'secondary'"
@@ -237,34 +220,34 @@
 import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import {
   mdiAccount,
+  mdiAccountCancel,
+  mdiAccountEdit,
   mdiAccountKey,
   mdiAccountLock,
   mdiCamera,
   mdiCancel,
   mdiContentSave,
   mdiEmailEdit,
-  mdiKey,
-  mdiPencil,
-  mdiPencilOff
+  mdiKey
 } from "@mdi/js";
 import formRulesMixin from "../../mixins/formRulesMixin";
 export default {
+  layout: "profile",
   mixins: [formRulesMixin],
   data() {
     return {
+      accountEditIcon: mdiAccountEdit,
+      accountEditCancelIcon: mdiAccountCancel,
       accountLockIcon: mdiAccountLock,
       cameraIcon: mdiCamera,
       cancelIcon: mdiCancel,
       contentSaveIcon: mdiContentSave,
       emailEditIcon: mdiEmailEdit,
-      editEmailMode: false,
-      editProfileMode: false,
-      editPasswordMode: false,
       items: [
         {
           action: this.toggleEditProfileMode,
           icon: mdiAccount,
-          title: "User Info"
+          title: "Edit Profile"
         },
         {
           action: this.toggleEditEmailMode,
@@ -277,8 +260,6 @@ export default {
           title: "Change Password"
         }
       ],
-      pencilIcon: mdiPencil,
-      pencilOffIcon: mdiPencilOff,
       updateEmail: "",
       updatePassword: {
         old_password: "",
@@ -291,6 +272,7 @@ export default {
   },
   computed: {
     ...mapGetters(["isAuthenticated", "loggedInUser"]),
+    ...mapState(["editEmailMode", "editPasswordMode", "editProfileMode"]),
     ...mapState("resource", ["userResources"])
   },
   created() {
@@ -306,36 +288,30 @@ export default {
     titleCase(string) {
       return titleCase(string);
     },
-    ...mapMutations(["setUserFirstName", "setUserLastName"]),
-    toggleEditEmailMode() {
-      this.editEmailMode = !this.editEmailMode;
-      this.editPasswordMode = false;
-      this.editProfileMode = false;
-    },
-    toggleEditProfileMode() {
-      this.editEmailMode = false;
-      this.editProfileMode = !this.editProfileMode;
-      this.editPasswordMode = false;
-    },
-    toggleEditPasswordMode() {
-      this.editEmailMode = false;
-      this.editPasswordMode = !this.editPasswordMode;
-      this.editProfileMode = false;
-    },
+    ...mapMutations([
+      "setEditEmailMode",
+      "setEditPasswordMode",
+      "setEditProfileMode",
+      "setUserFirstName",
+      "setUserLastName",
+      "toggleEditEmailMode",
+      "toggleEditPasswordMode",
+      "toggleEditProfileMode"
+    ]),
     updateUserEmailClient() {
       this.updateUserEmail({ email: this.updateEmail });
-      this.editEmailMode = false;
+      this.setEditEmailMode(false);
     },
-    updateUser() {
+    updateUserProfileClient() {
       this.updateUserProfile({
         user: this.$auth.user,
         profileImage: this.userProfileImage
       });
-      this.editProfileMode = false;
+      this.setEditProfileMode(false);
     },
     updateUserPasswordClient() {
       this.updateUserPassword(this.updatePassword);
-      this.editPasswordMode = false;
+      this.setEditPasswordMode(false);
     }
   }
 };

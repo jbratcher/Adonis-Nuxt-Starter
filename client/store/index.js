@@ -1,4 +1,8 @@
-export const state = () => ({});
+export const state = () => ({
+  editEmailMode: false,
+  editPasswordMode: false,
+  editProfileMode: false
+});
 
 export const getters = {
   isAuthenticated(state) {
@@ -19,6 +23,15 @@ export const getters = {
 };
 
 export const mutations = {
+  setEditEmailMode(state, mode) {
+    state.editEmailMode = mode;
+  },
+  setEditPasswordMode(state, mode) {
+    state.editPasswordMode = mode;
+  },
+  setEditProfileMode(state, mode) {
+    state.editProfileMode = mode;
+  },
   setUserEmail(state, user_email) {
     state.auth.user.email = user_email;
   },
@@ -30,6 +43,21 @@ export const mutations = {
   },
   setUserProfileImageSource(state, profile_image_source) {
     state.auth.user.profile_image_source = profile_image_source;
+  },
+  toggleEditEmailMode(state) {
+    state.editEmailMode = !state.editEmailMode;
+    state.editPasswordMode = false;
+    state.editProfileMode = false;
+  },
+  toggleEditPasswordMode(state) {
+    state.editEmailMode = false;
+    state.editPasswordMode = !state.editPasswordMode;
+    state.editProfileMode = false;
+  },
+  toggleEditProfileMode(state) {
+    state.editEmailMode = false;
+    state.editPasswordMode = false;
+    state.editProfileMode = !state.editProfileMode;
   }
 };
 
@@ -57,7 +85,11 @@ export const actions = {
         this.$auth.setUser(response);
         this.$toast.success("Email updated...").goAway(3000);
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        this.$toast
+          .error(`Email update error: ${error.response.data[0].message}`)
+          .goAway(5000);
+      });
   },
 
   // update a user's edited profile
@@ -125,7 +157,9 @@ export const actions = {
         this.$router.replace("/login");
       })
       .catch(error =>
-        this.$toast.error(`Password update error: ${error}`).goAway(5000)
+        this.$toast
+          .error(`Password update error: ${error.response.data[0].message}`)
+          .goAway(5000)
       );
   },
 
