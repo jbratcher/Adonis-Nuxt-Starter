@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Email Updated</title>
+</head>
+<body>
+  <section>
+      <p>Email Change Request</p>
+      <p>
+        Hi, {{ user.full_name }}.
+      </p>
+      <p>
+        This message is to notify you that your email has been updated on your account. To confirm this change, please click on the link below.
+      </p>
+      <a href="http://localhost:3000/users/verify-email?{{token}}">Verify your new email</a>
+  </section>
+</body>
+</html>

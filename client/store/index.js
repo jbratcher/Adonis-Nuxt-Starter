@@ -78,7 +78,6 @@ export const actions = {
 
   // update a user's email address with verification
   async updateUserEmail({ commit, dispatch }, updatedEmail) {
-    console.log(updatedEmail);
     await this.$axios
       .$patch("/auth/update/email", updatedEmail)
       .then(response => {
