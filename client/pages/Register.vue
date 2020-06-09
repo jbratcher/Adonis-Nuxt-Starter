@@ -53,7 +53,7 @@
           </v-card-text>
 
           <v-card-actions class="pt-0 px-4">
-            <v-btn @click="register" dark width="fit-content">
+            <v-btn @click="registerClient" dark width="fit-content">
               <v-icon class="mr-3">{{ accountPlusIcon }}</v-icon
               >Register
             </v-btn>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 import { mdiAccountPlus } from "@mdi/js";
 import formRulesMixin from "../mixins/formRulesMixin";
 export default {
@@ -95,37 +95,9 @@ export default {
     valid: true
   }),
   methods: {
-    async register() {
-      await this.$axios
-        .post("/auth/register", this.newUser)
-        .then(response => {
-          this.login();
-          this.$toast
-            .info(
-              `Thanks for registering! You will receive a confirmation email shortly at ${this.newUser.email}`
-            )
-            .goAway(6000);
-        })
-        .catch(error => {
-          this.$toast.error(`Login error: ${error.response}`).goAway(5000);
-        });
-    },
-    async login() {
-      await this.$auth
-        .loginWith("local", {
-          data: {
-            uid: this.newUser.email,
-            password: this.newUser.password
-          }
-        })
-        .then(response => {
-          this.$auth.setToken("local", "Bearer " + response.data.token);
-          this.$router.replace("/");
-          this.$toast.success(`Welcome, ${this.newUser.email}`).goAway(3000);
-        })
-        .catch(error => {
-          this.$toast.error(`Login error: ${error.response}`).goAway(5000);
-        });
+    ...mapActions(["register"]),
+    async registerClient() {
+      this.register(this.newUser);
     }
   }
 };

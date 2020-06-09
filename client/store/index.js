@@ -76,6 +76,51 @@ export const actions = {
       .catch(error => console.log(error));
   },
 
+  // authenticate a registered user by email and password
+  async login({ commit }, credentials) {
+    await this.$auth
+      .loginWith("local", {
+        data: {
+          uid: credentials.email,
+          password: credentials.password
+        }
+      })
+      .then(response => {
+        this.$toast.show("Logging you in...").goAway(1500);
+        this.$auth.setToken("local", "Bearer " + response.data.token);
+        this.$router.replace("/");
+        this.$toast
+          .success(`Welcome, ${this.$auth.user.full_name}`)
+          .goAway(3000);
+      })
+      .catch(error => {
+        this.$toast
+          .error(`Login error: ${error.response.data[0].message}`)
+          .goAway(3000);
+      });
+  },
+
+  // register a new user
+  async register({ commit, dispatch }, newUser) {
+    await this.$axios
+      .post("/auth/register", newUser)
+      .then(response => {
+        dispatch("login", newUser);
+        this.$toast
+          .info(
+            `Thanks for registering! You will receive a confirmation email shortly at ${
+              this.newUser.email
+            }`
+          )
+          .goAway(6000);
+      })
+      .catch(error => {
+        this.$toast
+          .error(`Registration error: ${error.response.data[0].message}`)
+          .goAway(5000);
+      });
+  },
+
   // update a user's email address with verification
   async updateUserEmail({ commit, dispatch }, updatedEmail) {
     console.log(updatedEmail);
@@ -165,9 +210,22 @@ export const actions = {
 
   // verify a newly created user's account from an email token link
   async verifyEmailWithToken({ commit }, token) {
+    console.log(`Token: ${token}`);
     await this.$axios
-      .$get(`/auth/verify-email?token=${token}`)
-      .then(response => console.log(response))
-      .catch(e => console.log(e));
+      .$get(`/auth/verify-email`, {
+        params: {
+          token
+        }
+      })
+      .then(response => {
+        this.$toast.success("Your email has been verified").goAway(3000);
+        this.$router.replace("/login");
+      })
+      .catch(error => {
+        console.log(error);
+        this.$toast
+          .error(`Email verification error: ${error.response.data[0].message}`)
+          .goAway(5000);
+      });
   }
 };

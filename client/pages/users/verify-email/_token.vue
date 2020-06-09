@@ -16,7 +16,7 @@ export default {
   methods: {
     ...mapActions(["verifyEmailWithToken"])
   },
-  created() {
+  mounted() {
     this.verifyEmailWithToken(Object.values(this.$route.query)[0]);
   }
 };
