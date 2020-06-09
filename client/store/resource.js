@@ -43,9 +43,20 @@ export const actions = {
         console.log(`Fetch resources error: ${error}`);
       });
   },
+
+  // fetch all resources for a user by id
   async fetchResourcesByUser({ commit }) {
-    // todo
+    await this.$axios
+      .get("/users/resources")
+      .then(response => {
+        console.log(response.data);
+        commit("setUserResources", response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   },
+
   // fetch resources by id
   async fetchResource({ commit }, id) {
     await this.$axios

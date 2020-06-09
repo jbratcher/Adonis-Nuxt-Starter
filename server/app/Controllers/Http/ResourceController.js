@@ -39,12 +39,14 @@ class ResourceController {
    * @param {object} ctx
    * @param {Request} ctx.request
    */
-  async store({ request }) {
+  async store({ auth, request }) {
+    const user = await auth.getUser();
     const { name, quantity } = request.all();
     const resource = new Resource();
     resource.fill({
       name,
-      quantity
+      quantity,
+      user_id: user.id,
     });
     await resource.save();
     return resource;
@@ -102,6 +104,13 @@ class ResourceController {
     const resource = await Resource.find(id);
     await resource.delete();
     return resource;
+  }
+
+  async getUserResources({ auth }) {
+    const user = await auth.getUser();
+    // const resources = await user.resources().fetch();
+    const resources = await Resource.query().where("user_id", user.id).fetch();
+    return resources;
   }
 }
 
