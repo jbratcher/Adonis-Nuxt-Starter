@@ -1,15 +1,15 @@
 <template>
   <v-container class="pa-0" fill-height fluid>
-    <v-row class="full-height">
+    <v-row class="full-height" justify="center">
       <!-- User menu navigation -->
       <v-col
         cols="12"
         class="py-0 col-md-3"
         :class="$breakpoint.mdAndUp ? '' : 'px-0'"
       >
-        <v-card class="d-flex flex-column align-center py-6" flat>
+        <v-container class="d-flex flex-column align-center">
           <!-- User Avatar -->
-          <v-avatar :size="$breakpoint.mdAndUp ? '5rem' : '10rem'">
+          <v-avatar>
             <v-img :src="this.$auth.user.profile_image_source" />
           </v-avatar>
 
@@ -27,11 +27,11 @@
           >
             {{ this.$auth.user.email }}
           </p>
-        </v-card>
+        </v-container>
       </v-col>
 
       <!-- User display content -->
-      <v-col>
+      <v-col v-if="editEmailMode || editPasswordMode || editProfileMode">
         <!-- Edit Fields -->
         <v-card
           class="mx-auto"
@@ -116,9 +116,9 @@
         </v-card>
 
         <!-- Edit Profile Action Buttons -->
-        <v-container class="pa-0">
+        <v-container v-if="editProfileMode" class="pa-0">
           <v-row justify="center" align="center">
-            <v-col v-if="editProfileMode" class="d-flex justify-center">
+            <v-col class="d-flex justify-center">
               <!-- Cancel Profile Edit -->
               <v-btn
                 @click="toggleEditProfileMode"
@@ -141,9 +141,9 @@
         </v-container>
 
         <!-- Change Password Action Buttons -->
-        <v-container class="pa-0">
+        <v-container v-if="editPasswordMode" class="pa-0">
           <v-row justify="center" align="center">
-            <v-col v-if="editPasswordMode" class="d-flex justify-center">
+            <v-col class="d-flex justify-center">
               <!-- Edit/Cancel Change Password -->
               <v-btn
                 @click="toggleEditPasswordMode"
@@ -166,9 +166,9 @@
         </v-container>
 
         <!-- Change Email Action Buttons -->
-        <v-container class="pa-0">
+        <v-container v-if="editEmailMode" class="pa-0">
           <v-row justify="center" align="center">
-            <v-col v-if="editEmailMode" class="d-flex justify-center">
+            <v-col class="d-flex justify-center">
               <!-- Edit/Cancel Change Email -->
               <v-btn
                 @click="toggleEditEmailMode"
@@ -189,17 +189,19 @@
             </v-col>
           </v-row>
         </v-container>
+      </v-col>
 
-        <!-- User resources list -->
-        <v-container>
-          <h3 v-if="userResources.length > 0" class="mb-6">Resources</h3>
+      <!-- User resources list -->
+      <v-col v-if="userResources.length > 0" cols="12">
+        <v-card class="px-12" flat width="80vw">
+          <h3 class="mb-6">Resources</h3>
           <v-list
             v-if="userResources"
-            :width="$breakpoint.mdAndUp ? '200px' : '100%'"
+            :width="$breakpoint.mdAndUp ? '200px' : '50%'"
           >
             <v-list-item
               v-for="(resource, index) in userResources"
-              :key="`${report.name}-${index}`"
+              :key="`${resource.name}-${index}`"
               :to="`/resources/${resource.name}`"
               router
               exact
@@ -209,7 +211,7 @@
               </v-btn>
             </v-list-item>
           </v-list>
-        </v-container>
+        </v-card>
         <!-- End Main -->
       </v-col>
     </v-row>
@@ -275,7 +277,7 @@ export default {
     ...mapState(["editEmailMode", "editPasswordMode", "editProfileMode"]),
     ...mapState("resource", ["userResources"])
   },
-  created() {
+  mounted() {
     this.fetchResourcesByUser();
   },
   methods: {

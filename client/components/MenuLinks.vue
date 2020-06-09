@@ -47,7 +47,8 @@
     <!-- User Profile Link -->
     <v-list-item
       v-if="isAuthenticated"
-      class="mt-3 mb-0"
+      class="mb-0"
+      :class="$breakpoint.mdAndUp ? '' : 'mt-3'"
       exact
       router
       :to="`/users/${this.$auth.user.id}`"

@@ -19,22 +19,25 @@ const Route = use("Route");
 Route.get("/", "HomeController.index");
 
 // Auth
-Route.get("/auth/user", "UserController.getCurrentUser");
-Route.get("/auth/verify-email", "UserController.verifyEmail");
-Route.post("/auth/login", "UserController.login");
-Route.post("auth/logout", "UserController.logout");
-Route.post("/auth/register", "UserController.register");
-Route.post("/auth/update/profile-pic", "UserController.updateProfilePic");
-Route.patch("/auth/update", "UserController.update");
-Route.patch("/auth/update/email", "UserController.updateEmail");
-Route.patch("/auth/update/password", "UserController.updatePassword");
-Route.get("/auth/forgot/password", "UserController.forgotPassword");
-Route.post(
-  "/auth/update/password-by-token",
-  "UserController.updatePasswordByToken"
-);
+Route.group(() => {
+  Route.get("/user", "UserController.getCurrentUser");
+  Route.get("/verify-email", "UserController.verifyEmail");
+  Route.post("/login", "UserController.login");
+  Route.post("/logout", "UserController.logout");
+  Route.post("/register", "UserController.register");
+  Route.post("/update/profile-pic", "UserController.updateProfilePic");
+  Route.patch("/update", "UserController.update");
+  Route.patch("/update/email", "UserController.updateEmail");
+  Route.patch("/update/password", "UserController.updatePassword");
+  Route.get("/forgot/password", "UserController.forgotPassword");
+  Route.post(
+    "/update/password-by-token",
+    "UserController.updatePasswordByToken"
+  );
+}).prefix("auth");
 
 // User Profile
+Route.get("/users/resources", "ResourceController.getUserResources");
 Route.get("/users/:id", "UserController.show");
 
 // Resources Example
