@@ -9,6 +9,11 @@ class UserController {
     return await User.all();
   }
 
+  // send forgot password email with token link
+  async forgotPassword({ request }) {
+    return await Persona.forgotPassword(request.input("uid"));
+  }
+
   async getCurrentUser({ auth }) {
     const user = await auth.getUser();
     const token = await auth.getAuthHeader();
@@ -50,14 +55,6 @@ class UserController {
     if (user.id !== Number(id)) {
       return "You cannot see someone else's profile";
     }
-    return user;
-  }
-
-  // verify a new user's account by token
-  async verifyEmail({ request, params, session, response }) {
-    const token = request.input("token");
-    const user = await Persona.verifyEmail(token);
-    session.flash({ message: "Email verified" });
     return user;
   }
 
@@ -114,16 +111,18 @@ class UserController {
     return await Persona.updatePassword(user, payload);
   }
 
-  // send forgot password email with token link
-  async forgotPassword({ request }) {
-    return await Persona.forgotPassword(request.input("uid"));
-  }
-
   // update user password by token
   async updatePasswordByToken({ request }) {
     const token = decodeURIComponent(request.input("token"));
     const payload = request.only(["password", "password_confirmation"]);
     const user = await Persona.updatePasswordByToken(token, payload);
+    return user;
+  }
+
+  // verify a new user's account by token
+  async verifyEmail({ request }) {
+    const token = request.input("token");
+    const user = await Persona.verifyEmail(token);
     return user;
   }
 }

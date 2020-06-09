@@ -16,13 +16,13 @@
           <v-card-text class="pb-0 px-4">
             <v-form v-model="valid" lazy-validation>
               <v-text-field
-                v-model="email"
+                v-model="credentials.email"
                 label="Email"
                 :rules="emailRules"
                 outlined
               />
               <v-text-field
-                v-model="password"
+                v-model="credentials.password"
                 autocomplete="new-password"
                 label="Password"
                 :rules="shortTextRules"
@@ -33,7 +33,7 @@
           </v-card-text>
 
           <v-card-actions class="pt-0">
-            <v-btn @click="login" dark width="fit-content">
+            <v-btn @click="loginClient" dark width="fit-content">
               <v-icon class="mr-3">{{ loginIcon }}</v-icon
               >Sign In
             </v-btn>
@@ -51,39 +51,23 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 import { mdiLogin } from "@mdi/js";
 import formRulesMixin from "../mixins/formRulesMixin";
 export default {
   mixins: [formRulesMixin],
   data: () => ({
     loginIcon: mdiLogin,
-    email: "",
-    password: "",
+    credentials: {
+      email: "",
+      password: ""
+    },
     valid: true
   }),
   methods: {
-    async login() {
-      await this.$auth
-        .loginWith("local", {
-          data: {
-            uid: this.email,
-            password: this.password
-          }
-        })
-        .then(response => {
-          this.$toast.show("Logging you in...").goAway(1500);
-          this.$auth.setToken("local", "Bearer " + response.data.token);
-          this.$router.replace("/");
-          this.$toast
-            .success(`Welcome, ${this.$auth.user.full_name}`)
-            .goAway(3000);
-        })
-        .catch(error => {
-          this.$toast
-            .error(`Login error: ${error.response.data[0].message}`)
-            .goAway(3000);
-        });
+    ...mapActions(["login"]),
+    async loginClient() {
+      this.login(this.credentials);
     }
   }
 };
