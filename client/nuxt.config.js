@@ -6,12 +6,12 @@ const title = strUtil.titleCase(
   process.env.npm_package_name.replace(/-/g, " ")
 );
 
-let conditionalBaseURL = "";
+let conditionalBaseURL; //string
 
 if (process.env.NODE_ENV === "development") {
-  conditionalBaseURL = "http://localhost:3333/";
+  conditionalBaseURL = process.env.DEV_HOST;
 } else if (process.env.NODE_ENV === "production") {
-  conditionalBaseURL = "https://evening-thicket-01115.herokuapp.com/";
+  conditionalBaseURL = process.env.PROD_HOST;
 }
 
 export default {
@@ -50,12 +50,12 @@ export default {
         rel: "icon",
         type: "image/x-icon",
         href: "/favicon.ico"
-      },
-      {
-        rel: "preload",
-        href: "https://cdn.jsdelivr.net/npm/animate.css@3.5.1",
-        as: "style"
       }
+      // {
+      //   rel: "preload",
+      //   href: "https://cdn.jsdelivr.net/npm/animate.css@3.5.1",
+      //   as: "style"
+      // }
     ]
   },
   /*
@@ -65,7 +65,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ["~assets/global.scss"],
   /*
    ** Plugins to load before mounting the App
    */
@@ -73,7 +73,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ["@nuxtjs/vuetify"],
+  buildModules: ["@nuxtjs/dotenv", "@nuxtjs/vuetify"],
   /*
    ** Nuxt.js modules
    */
