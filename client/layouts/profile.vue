@@ -66,9 +66,9 @@
       />
     </v-navigation-drawer>
     <!-- Nuxt content -->
-    <v-content>
+    <v-main>
       <nuxt />
-    </v-content>
+    </v-main>
     <!-- Footer Area -->
     <v-footer>
       <v-row justify="center">
