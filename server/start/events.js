@@ -2,7 +2,7 @@ const querystring = require("querystring");
 const Env = use("Env");
 const Event = use("Event");
 const Mail = use("Mail");
-const host = Env.get("APP_URL");
+const host = Env.get("CLIENT_APP_URL");
 
 // on new user registration, send email verification link
 Event.on("user::created", async (payload) => {

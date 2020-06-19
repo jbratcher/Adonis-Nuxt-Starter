@@ -108,9 +108,7 @@ export const actions = {
         dispatch("login", newUser);
         this.$toast
           .info(
-            `Thanks for registering! You will receive a confirmation email shortly at ${
-              this.newUser.email
-            }`
+            `Thanks for registering! You will receive a confirmation email shortly at ${this.newUser.email}`
           )
           .goAway(6000);
       })
@@ -209,7 +207,6 @@ export const actions = {
 
   // verify a newly created user's account from an email token link
   async verifyEmailWithToken({ commit }, token) {
-    console.log(`Token: ${token}`);
     await this.$axios
       .$get(`/auth/verify-email`, {
         params: {
