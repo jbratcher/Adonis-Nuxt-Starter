@@ -2,6 +2,7 @@ const querystring = require("querystring");
 const Env = use("Env");
 const Event = use("Event");
 const Mail = use("Mail");
+const host = Env.get("APP_URL");
 
 // on new user registration, send email verification link
 Event.on("user::created", async (payload) => {
@@ -10,7 +11,7 @@ Event.on("user::created", async (payload) => {
     token: payload.token,
   });
 
-  await Mail.send("new.user", { user, token }, (message) => {
+  await Mail.send("new.user", { host, token, user }, (message) => {
     message
       .to(payload.user.email)
       .from(`<${Env.get("MAIL_USERNAME")}>`)
@@ -37,7 +38,7 @@ Event.on("forgot::password", async (payload) => {
     token: payload.token,
   });
 
-  await Mail.send("forgot.password", { user, token }, (message) => {
+  await Mail.send("forgot.password", { host, token, user }, (message) => {
     message
       .to(payload.user.email)
       .from(`<${Env.get("MAIL_USERNAME")}>`)
@@ -52,7 +53,7 @@ Event.on("email::changed", async (payload) => {
     token: payload.token,
   });
 
-  await Mail.send("update.email", { user, token }, (message) => {
+  await Mail.send("update.email", { host, token, user }, (message) => {
     message
       .to(payload.user.email)
       .from(`<${Env.get("MAIL_USERNAME")}>`)
