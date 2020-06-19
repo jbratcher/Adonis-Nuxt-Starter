@@ -1,18 +1,11 @@
 import colors from "vuetify/es5/util/colors";
 import * as strUtil from "./utils/str-utils.js";
+require("dotenv").config();
 
 // format package name for title display
 const title = strUtil.titleCase(
   process.env.npm_package_name.replace(/-/g, " ")
 );
-
-let conditionalBaseURL; //string
-
-if (process.env.NODE_ENV === "development") {
-  conditionalBaseURL = process.env.DEV_HOST;
-} else if (process.env.NODE_ENV === "production") {
-  conditionalBaseURL = process.env.PROD_HOST;
-}
 
 export default {
   mode: "universal",
@@ -119,7 +112,10 @@ export default {
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: conditionalBaseURL
+    baseURL:
+      process.env.NODE_ENV === "development"
+        ? process.env.DEV_HOST
+        : process.env.PROD_HOST
   },
   /*
    ** Nuxt Markdown Module
