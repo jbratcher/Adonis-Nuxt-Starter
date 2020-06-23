@@ -63,15 +63,15 @@ The `.env` file is where you will tell Adonis your database and mail settings.
 
 #### Database
 
-By default, this project uses Sqlite for the data layer but this can be easily changed in the `.env` file.
+By default, this project uses PostgreSQL for the data layer but this can be easily changed in the `.env` file.
 
 ```js
-DB_CONNECTION=sqlite
+DB_CONNECTION=pg
 DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
+DB_PORT=5432
+DB_USER=postgres
 DB_PASSWORD=
-DB_DATABASE=adonis
+DB_DATABASE=adonis_nuxt_starter
 ```
 
 If you use another database type, you will need to [install the appropriate driver](https://adonisjs.com/docs/4.1/database#_supported_databases).
@@ -91,6 +91,16 @@ MAIL_PASSWORD=Y0urPa$$w0rd!
 ```
 
 The Gmail SMTP provider was chosen to provide a free and simple mailer for starter projects. This provider is limited to sending 500 emails per day. You may also need to [change your Gmail account settings](https://hotter.io/docs/email-accounts/secure-app-gmail/) in regards to allowing your local development environment interact with this service.
+
+#### Client URL
+
+An environment variable is used to set the URL of the client (front-end) for easy deployment. This variable must be set locally for some features to work.
+
+`.env`
+
+```js
+CLIENT_APP_URL = http://localhost:3000
+```
 
 #### Migrations
 
@@ -115,24 +125,32 @@ At this point you should be able to start customizing the application to your re
   - Register, login, logout, and manage user profiles
   - New registration email with link to verify account
   - Forgot password/password reset
-  - Authentication and Authorization
+  - Authentication and Authorization synced between client and server
 
 - Example CRUD
 
   - Adonis migration, model and controller
   - Adonis CRUD routes
-  - SQlite3 Database with example resource table
+  - PostgreSQL database with example resource table
   - Nuxt CRUD operations with Vuex methods
 
 ## Build Setup (Nuxt Client)
 
 ```bash
 # build for production and launch server
-$ npm run build
-$ npm run start
+npm run build
+npm run start
 
 # generate static project
-$ npm run generate
+npm run generate
+```
+
+## Server Deployment (Heroku)
+
+```bash
+# from app root
+cd server
+npm run deploy
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

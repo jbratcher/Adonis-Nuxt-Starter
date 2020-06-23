@@ -2,9 +2,13 @@
 
 const Resource = use("App/Models/Resource");
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+/**
+ * AdonisJs provides a HTTP Context object to each route handler.
+ * This object contains everything you need to handle the request, like the request or response class, and can be easily extended via Providers or Middleware.
+ * (ex. ctx, ctx.request, ctx.auth, etc)
+ * https://adonisjs.com/docs/4.1/request-lifecycle
+ *
+ */
 
 /**
  * Resourceful controller for interacting with resources
@@ -14,7 +18,9 @@ class ResourceController {
    * Show a list of all resources.
    * GET resources
    *
-   * @param {object} ctx
+   * @method index
+   *
+   * @return {Object} resources
    */
   async index() {
     const resources = await Resource.all();
@@ -22,22 +28,14 @@ class ResourceController {
   }
 
   /**
-   * Render a form to be used for creating a new resource.
-   * GET resources/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create({ request, response, view }) {}
-
-  /**
    * Create/save a new resource.
    * POST resources
    *
-   * @param {object} ctx
-   * @param {Request} ctx.request
+   * @method store
+   *
+   * @param {object} auth, request
+   *
+   * @return {object} resource
    */
   async store({ auth, request }) {
     const user = await auth.getUser();
@@ -56,33 +54,28 @@ class ResourceController {
    * Display a single resource.
    * GET resources/:id
    *
-   * @param {object} ctx
-   * @param {Params} ctx.params
+   * @method show
+   *
+   * @param {object} params
+   *
+   * @return {object} resource
    */
   async show({ params }) {
     const { id } = params;
-    const resources = await Resource.find(id);
-    return resources;
+    const resource = await Resource.find(id);
+    return resource;
   }
-
-  /**
-   * Render a form to update an existing resource.
-   * GET resources/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit({ params, request, response, view }) {}
 
   /**
    * Update resource details.
    * PUT or PATCH resources/:id
    *
-   * @param {object} ctx
-   * @param {Params} ctx.params
-   * @param {Request} ctx.request
+   * @method update
+   *
+   * @param {object} params, request
+   *
+   * @return {object} resource
+   *
    */
   async update({ params, request }) {
     const { id } = params;
@@ -96,8 +89,12 @@ class ResourceController {
    * Delete a resource with id.
    * DELETE resources/:id
    *
-   * @param {object} ctx
-   * @param {Params} ctx.params
+   * @method destroy
+   *
+   * @param {object} params
+   *
+   * @return {object} resource
+   *
    */
   async destroy({ params }) {
     const { id } = params;
@@ -106,9 +103,19 @@ class ResourceController {
     return resource;
   }
 
+  /**
+   * Get all resources owned by current user.
+   * GET users/resources
+   *
+   * @method getUserResources
+   *
+   * @param {object} auth
+   *
+   * @return {object} resources
+   *
+   */
   async getUserResources({ auth }) {
     const user = await auth.getUser();
-    // const resources = await user.resources().fetch();
     const resources = await Resource.query().where("user_id", user.id).fetch();
     return resources;
   }

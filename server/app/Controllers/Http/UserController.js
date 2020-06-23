@@ -4,47 +4,120 @@ const Helpers = use("Helpers");
 const Persona = use("Persona");
 const User = use("App/Models/User");
 
+/**
+ * AdonisJs provides a HTTP Context object to each route handler.
+ * This object contains everything you need to handle the request, like the request or response class, and can be easily extended via Providers or Middleware.
+ * (ex. ctx, ctx.request, ctx.auth, etc)
+ * https://adonisjs.com/docs/4.1/request-lifecycle
+ *
+ */
+
+/**
+ * Handles all methods related to users
+ */
 class UserController {
-  // Default example: find all registered users
+  /**
+   * Show a list of all users.
+   *
+   * GET auth/users
+   *
+   * @method index
+   *
+   * @return {Object} users
+   */
   async index() {
-    return await User.all();
+    const users = await User.all();
+    return users;
   }
 
+  /**
+   * Passing the uid from the client-side form, Adonis Persona finds the user using the uid and then fires a `forgot::password` event with a temporary token used to verify the password reset request
+   *
+   * GET auth/forgot/password
+   *
+   * @method forgotPassword
+   *
+   * @param  {String}       uid
+   *
+   * @return {void}
+   *
+   */
   async forgotPassword({ request }) {
-    // Send forgot password email with token link
     return await Persona.forgotPassword(request.input("uid"));
   }
 
+  /**
+   * Using the auth object, a token is generated for the currently authorized user.
+   *
+   * GET auth/user
+   *
+   * @method getCurrentUser
+   *
+   * @param  {Object}       auth
+   *
+   * @return {Object}       user
+   *
+   */
   async getCurrentUser({ auth }) {
-    // get current user data object
     const user = await auth.getUser();
-    // get current token value for user
     const token = await auth.getAuthHeader();
     return user;
   }
 
+  /**
+   * Verify the user using the uid and password passed from the client-side form.
+   * Return a token to the client to sync authentication with server.
+   *
+   * POST auth/login
+   *
+   * @method login
+   *
+   * @param  {Object}       request, auth
+   *
+   * @return {String}       token
+   *
+   */
   async login({ request, auth }) {
-    // create payload from uid and password
     const payload = request.only(["uid", "password"]);
-    // authenticate the user with Persona, returns user
     const user = await Persona.verify(payload);
-    // respond to client with user token
-    return await auth.generate(user);
+    const token = await auth.generate(user);
+    return token;
   }
 
+  /**
+   * Revoke authentication for user using token.
+   *
+   * POST auth/logout
+   *
+   * @method logout
+   *
+   * @param  {Object}       auth
+   *
+   * @return {Object}       user
+   *
+   */
   async logout({ auth }) {
-    // get the current user
     const user = await auth.getUser();
-    // get current token value for user
     const token = await auth.getAuthHeader();
     // revoke token
     await user.tokens().where("token", token).update({ is_revoked: true });
-    // respond to client with user data object
     return user;
   }
 
-  async register({ request, auth, response }) {
-    // create payload object with registration fields
+  /**
+   * Passing inputs from client-side registration form, create full name and profile image then add the user to the user's table.
+   * Adonis Persona generates an email verification token and fires a user::created event.
+   *
+   * POST auth/register
+   *
+   * @method register
+   *
+   * @param  {Object}       request, auth
+   *
+   * @return {String}       token
+   *
+   */
+  async register({ request, auth }) {
     const payload = request.only([
       "email",
       "first_name",
@@ -59,62 +132,96 @@ class UserController {
     payload.profile_image_source = `https://ui-avatars.com/api/?name=${first_name}+${last_name}`;
     // add the newly registered user to the user table, triggers mail event, returns user
     const user = await Persona.register(payload);
-    // respond to client with authentication token
-    return await auth.generate(user);
+    const token = await auth.generate(user);
+    return token;
   }
 
-  // show a user profile
+  /**
+   * Show a user profile matching the id in the query string param.
+   *
+   * GET /users/:id
+   *
+   * @method show
+   *
+   * @param  {Object}       auth, params
+   *
+   * @return {Object}       user
+   *
+   */
   async show({ auth, params }) {
-    // get user id from query params
     const { id } = params;
-    // get the current user
     const user = await auth.getUser();
     // verify current user id matches id from query params
     if (user.id !== Number(id)) {
       // if no match, log error. No return of user data.
-      return "You cannot see someone else's profile";
+      return "You cannot view another user's profile";
     }
-    // return user data object
     return user;
   }
 
-  // update user profile information
+  /**
+   * Passing inputs from client-side profile edit form, update the user's profile information.
+   * Use Adonis Persona to update the user in the user table.
+   *
+   * PATCH auth/update
+   *
+   * @method update
+   *
+   * @param  {Object}       request, auth
+   *
+   * @return {Object}       updatedUser
+   *
+   */
   async update({ request, auth }) {
-    // get current user data object
-    const user = await auth.user;
-    // create payload from first and last name
+    // TODO: allow partial update with only some fields
+    const user = await auth.getUser();
     const payload = request.only(["first_name", "last_name"]);
     // create full name field
     payload.full_name = `${payload.first_name} ${payload.last_name}`;
-    // use Persona to update data in user table, returns user
     await Persona.updateProfile(user, payload);
-    // get (updated) current user data object
-    const updatedUser = await auth.user;
-    // respond to client with updated user data object
+    const updatedUser = await auth.getUser();
     return updatedUser;
   }
 
-  // change user password from profile edit
+  /**
+   * Passing inputs from client-side profile edit form, update the user's email
+   * Use Adonis Persona to update the user's email, generate a email verification token, and triggers an email::changed event
+   *
+   * PATCH auth/update/email
+   *
+   * @method updateEmail
+   *
+   * @param  {Object}       request, auth
+   *
+   * @return {Object}       updatedUser
+   *
+   */
   async updateEmail({ request, auth }) {
-    // get email
     const payload = request.only(["email"]);
-    // get current user data object
     const user = await auth.user;
-    // respond to client with updated user data object, user Persona to update email, triggers email event, returns user
-    return await Persona.updateProfile(user, payload);
+    const updatedUser = await Persona.updateProfile(user, payload);
+    return updatedUser;
   }
 
-  // linked with update()
-  // must be a post request since a new file is created
+  /**
+   * Passing profile pic from client-side upload form, move file to public folder and update user's profile image source field.
+   *
+   * POST auth/update/profile-pic
+   *
+   * @method updateProfilePic
+   *
+   * @param  {Object}       request, auth
+   *
+   * @return {Object}       user
+   *
+   */
   async updateProfilePic({ request, auth }) {
-    // get current user data object
     const user = await auth.user;
     // create file from client upload
     const file = await request.file("profileImage");
-    // if file is not null or undefined
-    // move the image file to the static/images folder
+    // if file is not null or undefined, move the image file to the static/images folder
     if (file) {
-      // move the image to the public images folder and name with format `first-last-1.filetype` overwriting any images with the same name
+      // move the image to the public images folder and name with format `first-last-1.filetype` (ex. jeremy-bratcher-1.jpg) overwriting any images with the same name
       await file.move(Helpers.appRoot("public/images"), {
         name: `${user.first_name}-${user.last_name}-${user.id}.${file.subtype}`,
         overwrite: true,
@@ -127,46 +234,74 @@ class UserController {
       user.profile_image_source = `${Env.get("APP_URL")}/images/${
         user.first_name
       }-${user.last_name}-${user.id}.${file.subtype}`;
-      // update the user table with the updated user object containing the new image
       user.save();
-      // respond to the client with the updated user data object
       return user;
     }
     // if there in no file, log message and return
     return "No file uploaded";
   }
 
-  // change user password from profile edit
+  /**
+   * Passing old, new, and confirmation of new password from client-side form, update user's password.
+   * Triggers a password::changed event.
+   *
+   * PATCH auth/update/password
+   *
+   * @method updatePassword
+   *
+   * @param  {Object}       request, auth
+   *
+   * @return {Object}       updatedUser
+   *
+   */
   async updatePassword({ request, auth }) {
-    // create payload from client update password form
     const payload = request.only([
       "old_password",
       "password",
       "password_confirmation",
     ]);
-    // get current user data object
-    const user = await auth.user;
-    // respond to client with updated data user object, Persona updates user with new password, triggers email event, returns user
-    return await Persona.updatePassword(user, payload);
+    const user = await auth.getUser();
+    const updatedUser = await Persona.updatePassword(user, payload);
+    return updatedUser;
   }
 
-  // update user password by token
+  /**
+   * Passing old, new, and confirmation of new password from client-side form, update the user's password.
+   * Adonis Persona verifies the token, ensures the password is confirmed and updates the user's password.
+   * A password::recovered event is fired.
+   *
+   * POST auth/update/password-by-token
+   *
+   * @method updatePasswordByToken
+   *
+   * @param  {Object}       request
+   *
+   * @return {Object}       user
+   *
+   */
   async updatePasswordByToken({ request }) {
-    // get token decoded from it's url form to a plain string
     const token = decodeURIComponent(request.input("token"));
-    // create payload from client update password form
     const payload = request.only(["password", "password_confirmation"]);
-    // use Persona to update password using the token, returns user
     const user = await Persona.updatePasswordByToken(token, payload);
-    // respond to client with updated user data object
     return user;
   }
 
-  // verify a new user's account by token
+  /**
+   * Using the email token from a new registration email link, activate the user's account.
+   * Adonis Persona removes the email token from the tokens table and changes the account status of the user to 'active'.
+   *
+   * GET auth/verify-email
+   *
+   * @method verifyEmail
+   *
+   * @param  {Object}       request
+   *
+   * @return {Object}       user
+   *
+   */
   async verifyEmail({ request }) {
     // get token from query string params in URL
     const token = request.input("token");
-    // activate the user account
     const user = await Persona.verifyEmail(token);
     // respond to client with updated user data object
     return user;

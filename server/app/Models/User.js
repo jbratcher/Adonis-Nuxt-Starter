@@ -11,8 +11,7 @@ class User extends Model {
     super.boot();
 
     /**
-     * A hook to hash the user password before saving
-     * it to the database.
+     * A hook to hash the user password before saving it to the database.
      */
     this.addHook("beforeSave", async (userInstance) => {
       if (userInstance.dirty.password) {
@@ -22,10 +21,7 @@ class User extends Model {
   }
 
   /**
-   * A relationship on tokens is required for auth to
-   * work. Since features like `refreshTokens` or
-   * `rememberToken` will be saved inside the
-   * tokens table.
+   * A relationship on tokens is required for auth to work since verification tokens like the 'email token' will be saved in the tokens table
    *
    * @method tokens
    *

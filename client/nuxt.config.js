@@ -7,6 +7,10 @@ const title = strUtil.titleCase(
   process.env.npm_package_name.replace(/-/g, " ")
 );
 
+// console.log(`Env: ${process.env.NODE_ENV}`);
+// console.log(`Dev Host: ${process.env.DEV_HOST}`);
+// console.log(`Prod Host: ${process.env.PROD_HOST}`);
+
 export default {
   mode: "universal",
   /*

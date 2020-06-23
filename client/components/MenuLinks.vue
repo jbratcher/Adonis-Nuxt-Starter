@@ -54,11 +54,7 @@
       :to="`/users/${this.$auth.user.id}`"
     >
       <v-avatar size="36">
-        <img
-          v-if="this.$auth.user"
-          alt="Avatar"
-          :src="this.$auth.user.profile_image_source"
-        />
+        <img alt="Avatar" :src="this.$auth.user.profile_image_source" />
       </v-avatar>
     </v-list-item>
 
@@ -113,7 +109,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["isAuthenticated", "loggedInUser"])
+    ...mapGetters(["isAuthenticated"])
   },
   data: () => ({
     accountIcon: mdiAccount,

@@ -72,6 +72,9 @@ module.exports = {
   |
   | npm i --save pg
   |
+  | Preset to use environment variables for easy deployment
+  | Configured for Heroku PostgreSQL addon
+  |
   */
   pg: {
     client: "pg",

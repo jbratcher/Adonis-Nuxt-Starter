@@ -1,2 +1,5 @@
+// Heroku deployment commands
+// ENV_SILENT=true is used because no .env file will be present on the remote server, instead environment variables are used (https://devcenter.heroku.com/articles/config-vars#using-the-heroku-dashboard)
+
 release: ENV_SILENT=true node ace migration:refresh --seed --force
 web: ENV_SILENT=true npm run start

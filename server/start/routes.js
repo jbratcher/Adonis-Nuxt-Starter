@@ -16,10 +16,12 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
+// Default base route
 Route.get("/", "HomeController.index");
 
 // Auth
 Route.group(() => {
+  Route.get("/users", "UserController.index");
   Route.get("/user", "UserController.getCurrentUser");
   Route.get("/verify-email", "UserController.verifyEmail");
   Route.post("/login", "UserController.login");
