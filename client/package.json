@@ -1,7 +1,6 @@
 {
   "name": "adonis-nuxt-starter-client",
   "version": "1.0.0",
-  "adonis-version": "4.1.0",
   "description": "Starter project for Adonis and Nuxt (Client)",
   "author": "Jeremy Bratcher",
   "private": true,
@@ -27,7 +26,7 @@
     "@nuxtjs/pwa": "^3.0.0-0",
     "@nuxtjs/toast": "^3.3.0",
     "@nuxtjs/vuetify": "^1.11.2",
-    "nuxt": "^2.12.0",
+    "nuxt": "^2.13.0",
     "nuxt-webfontloader": "^1.1.0",
     "vue-toasted": "^1.1.28"
   },

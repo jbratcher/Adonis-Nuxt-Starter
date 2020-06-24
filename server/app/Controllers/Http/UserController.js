@@ -37,7 +37,7 @@ class UserController {
    *
    * @method forgotPassword
    *
-   * @param  {String}       uid
+   * @param  {String} uid
    *
    * @return {void}
    *
@@ -53,9 +53,9 @@ class UserController {
    *
    * @method getCurrentUser
    *
-   * @param  {Object}       auth
+   * @param  {Object} auth
    *
-   * @return {Object}       user
+   * @return {Object} user
    *
    */
   async getCurrentUser({ auth }) {
@@ -72,9 +72,9 @@ class UserController {
    *
    * @method login
    *
-   * @param  {Object}       request, auth
+   * @param  {Object} request, auth
    *
-   * @return {String}       token
+   * @return {String} token
    *
    */
   async login({ request, auth }) {
@@ -91,9 +91,9 @@ class UserController {
    *
    * @method logout
    *
-   * @param  {Object}       auth
+   * @param  {Object} auth
    *
-   * @return {Object}       user
+   * @return {Object} user
    *
    */
   async logout({ auth }) {
@@ -112,9 +112,9 @@ class UserController {
    *
    * @method register
    *
-   * @param  {Object}       request, auth
+   * @param  {Object} request, auth
    *
-   * @return {String}       token
+   * @return {String} token
    *
    */
   async register({ request, auth }) {
@@ -143,9 +143,9 @@ class UserController {
    *
    * @method show
    *
-   * @param  {Object}       auth, params
+   * @param  {Object} auth, params
    *
-   * @return {Object}       user
+   * @return {Object} user
    *
    */
   async show({ auth, params }) {
@@ -167,9 +167,9 @@ class UserController {
    *
    * @method update
    *
-   * @param  {Object}       request, auth
+   * @param  {Object} request, auth
    *
-   * @return {Object}       updatedUser
+   * @return {Object} updatedUser
    *
    */
   async update({ request, auth }) {
@@ -191,9 +191,9 @@ class UserController {
    *
    * @method updateEmail
    *
-   * @param  {Object}       request, auth
+   * @param  {Object} request, auth
    *
-   * @return {Object}       updatedUser
+   * @return {Object} updatedUser
    *
    */
   async updateEmail({ request, auth }) {
@@ -210,9 +210,9 @@ class UserController {
    *
    * @method updateProfilePic
    *
-   * @param  {Object}       request, auth
+   * @param  {Object} request, auth
    *
-   * @return {Object}       user
+   * @return {Object} user
    *
    */
   async updateProfilePic({ request, auth }) {
@@ -249,9 +249,9 @@ class UserController {
    *
    * @method updatePassword
    *
-   * @param  {Object}       request, auth
+   * @param  {Object} request, auth
    *
-   * @return {Object}       updatedUser
+   * @return {Object} updatedUser
    *
    */
   async updatePassword({ request, auth }) {
@@ -274,9 +274,9 @@ class UserController {
    *
    * @method updatePasswordByToken
    *
-   * @param  {Object}       request
+   * @param  {Object} request
    *
-   * @return {Object}       user
+   * @return {Object} user
    *
    */
   async updatePasswordByToken({ request }) {
@@ -294,9 +294,9 @@ class UserController {
    *
    * @method verifyEmail
    *
-   * @param  {Object}       request
+   * @param  {Object} request
    *
-   * @return {Object}       user
+   * @return {Object} user
    *
    */
   async verifyEmail({ request }) {

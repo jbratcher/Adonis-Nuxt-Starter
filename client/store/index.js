@@ -88,7 +88,6 @@ export const actions = {
       .then(response => {
         this.$toast.show("Logging you in...").goAway(1500);
         this.$auth.setToken("local", "Bearer " + response.data.token);
-        this.$router.replace("/");
         this.$toast
           .success(`Welcome, ${this.$auth.user.full_name}`)
           .goAway(3000);
@@ -165,7 +164,6 @@ export const actions = {
       config: config
     })
       .then(response => {
-        console.log(response);
         commit("setUserProfileImageSource", response.data.profile_image_source);
       })
       .catch(e => console.log(error));
@@ -176,7 +174,6 @@ export const actions = {
     await this.$axios
       .$patch("/auth/update/password", updatePassword)
       .then(response => {
-        console.log(response);
         this.$toast.success("Password changed...").goAway(3000);
       })
       .catch(error => console.log(error));
@@ -196,7 +193,6 @@ export const actions = {
       )
       .then(() => {
         this.$toast.success("Your password has been updated").goAway(3000);
-        this.$router.replace("/login");
       })
       .catch(error =>
         this.$toast
@@ -215,7 +211,6 @@ export const actions = {
       })
       .then(response => {
         this.$toast.success("Your email has been verified").goAway(3000);
-        this.$router.replace("/login");
       })
       .catch(error => {
         console.log(error);
