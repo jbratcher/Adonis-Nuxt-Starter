@@ -11,6 +11,7 @@
       <v-app-bar-nav-icon
         class="hidden-md-and-up ml-auto"
         @click.stop="drawer = !drawer"
+        aria-label="menu-open"
         name="menu-open"
         x-large
       >

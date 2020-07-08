@@ -170,7 +170,7 @@ export const actions = {
   },
 
   // change password from user profile
-  async updateUserPassword({ commit, dispatch }, updatePassword) {
+  async updateUserPassword({ commit }, updatePassword) {
     await this.$axios
       .$patch("/auth/update/password", updatePassword)
       .then(response => {

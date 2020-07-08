@@ -245,23 +245,6 @@ export default {
       cancelIcon: mdiCancel,
       contentSaveIcon: mdiContentSave,
       emailEditIcon: mdiEmailEdit,
-      items: [
-        {
-          action: this.toggleEditProfileMode,
-          icon: mdiAccount,
-          title: "Edit Profile"
-        },
-        {
-          action: this.toggleEditEmailMode,
-          icon: mdiEmailEdit,
-          title: "Change Email"
-        },
-        {
-          action: this.toggleEditPasswordMode,
-          icon: mdiKey,
-          title: "Change Password"
-        }
-      ],
       updateEmail: "",
       updatePassword: {
         old_password: "",
