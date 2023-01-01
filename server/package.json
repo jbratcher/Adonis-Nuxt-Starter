@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "node-sass": "^7.0.0",
-    "sass-loader": "^8.0.2"
+    "sass-loader": "^13.2.0"
   },
   "autoload": {
     "App": "./app"
